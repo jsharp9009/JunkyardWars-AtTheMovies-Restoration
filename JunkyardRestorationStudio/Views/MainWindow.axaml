@@ -1,0 +1,366 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:JunkyardRestorationStudio.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="JunkyardRestorationStudio.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Junkyard Restoration Studio v1.0"
+        KeyDown="Window_KeyDown">
+
+    <Grid Margin="15"
+          RowDefinitions="Auto,*"
+          ColumnDefinitions="320,*">
+
+        <!-- ===================================================== -->
+        <!-- Header -->
+        <!-- ===================================================== -->
+
+        <Grid Grid.Row="0"
+              Grid.ColumnSpan="2"
+              Margin="0,0,0,15"
+              ColumnDefinitions="*,250">
+
+            <StackPanel>
+
+                <TextBlock
+                    Classes="Header"
+                    Text="Junkyard Restoration Studio"/>
+
+                <TextBlock
+                    Classes="Project"
+                    Text="{Binding Project.Settings.Name}"/>
+
+                <TextBlock
+                    Text="{Binding Status}"/>
+
+            </StackPanel>
+
+            <StackPanel Grid.Column="1">
+
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Text="{Binding Project.CurrentPosition}" />
+
+                <ProgressBar
+                    Margin="0,6,0,4"
+                    Height="18"
+                    Minimum="0"
+                    Maximum="1"
+                    Value="{Binding Project.Progress}" />
+
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    Text="{Binding Project.ProgressText}" />
+
+            </StackPanel>
+
+        </Grid>
+
+        <!-- ===================================================== -->
+        <!-- Left Column -->
+        <!-- ===================================================== -->
+
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="0,0,15,0"
+            Spacing="15">
+
+            <!-- Playback -->
+
+            <Border
+                Classes="Card">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Classes="Section"
+                        Text="Playback"/>
+
+                    <WrapPanel>
+
+                        <Button
+                            Classes="Action"
+                            Content="20s"
+                            Command="{Binding Play20Command}" />
+
+                        <Button
+                            Classes="Action"
+                            Content="30s"
+                            Command="{Binding Play30Command}" />
+
+                        <Button
+                            Classes="Action"
+                            Content="45s"
+                            Command="{Binding Play45Command}" />
+
+                        <Button
+                            Classes="Action"
+                            Content="60s"
+                            Command="{Binding Play60Command}" />
+
+                        <Button
+                            Classes="Action"
+                            Content="Stop"
+                            Command="{Binding StopCommand}" />
+
+                    </WrapPanel>
+
+                </StackPanel>
+
+            </Border>
+
+            <Border Classes="Card">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Classes="Section"
+                        Text="Agreement"/>
+
+                    <ItemsControl ItemsSource="{Binding Project.CurrentSegment.Analyses}">
+
+                        <ItemsControl.ItemTemplate>
+
+                            <DataTemplate>
+
+                                <Grid
+                                    ColumnDefinitions="60,70,*"
+                                    Margin="0,2">
+
+                                    <TextBlock
+                                        Text="{Binding RunName}"/>
+
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        Text="{Binding ScoreDisplay}"/>
+
+                                    <TextBlock
+                                        Grid.Column="2"
+                                        Margin="12,0,0,0"
+                                        FontWeight="Bold"
+                                        Foreground="{Binding AgreementBrush}"
+                                        Text="{Binding AgreementText}"/>
+
+                                </Grid>
+
+                            </DataTemplate>
+
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+
+                </StackPanel>
+
+            </Border>
+
+            <!-- Selection -->
+
+            <Border
+                Classes="Card">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Classes="Section"
+                        Text="Best Version"/>
+
+                    <ComboBox
+                        Width="150"
+                        ItemsSource="{Binding Project.CurrentSegment.RunChoices}"
+                        SelectedItem="{Binding Project.CurrentSegment.Choice.SelectedRun}" />
+
+                </StackPanel>
+
+            </Border>
+
+            <!-- Navigation -->
+
+            <Border
+                Classes="Card">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Classes="Section"
+                        Text="Navigation"/>
+
+                    <Grid ColumnDefinitions="*,*">
+
+                        <Button
+                            Grid.Column="0"
+                            Classes="Action"
+                            Content="◀ Previous"
+                            Command="{Binding PreviousCommand}" />
+
+                        <Button
+                            Grid.Column="1"
+                            Classes="Action"
+                            Content="Next ▶"
+                            Command="{Binding NextCommand}" />
+
+                    </Grid>
+
+                    <TextBlock
+                        Margin="0,12,0,4"
+                        Text="Jump to Segment"/>
+
+                    <Grid ColumnDefinitions="*,Auto">
+
+                        <TextBox
+                            Grid.Column="0"
+                            Text="{Binding JumpSegment}" />
+
+                        <Button
+                            Grid.Column="1"
+                            Classes="Action"
+                            Content="Go"
+                            Command="{Binding JumpCommand}" />
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+            <Border Classes="Card">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Classes="Section"
+                        Text="Keyboard"/>
+
+                    <Grid
+                        ColumnDefinitions="Auto,*"
+                        RowDefinitions="Auto,Auto,Auto,Auto">
+
+                        <TextBlock Text="1-4"/>
+                        <TextBlock Grid.Column="1" Text="Play Clips"/>
+
+                        <TextBlock Grid.Row="1" Text="Q-R"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="Select Run"/>
+
+                        <TextBlock Grid.Row="2" Text="Ctrl←"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="Previous"/>
+
+                        <TextBlock Grid.Row="3" Text="Ctrl→"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="Next"/>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+        </StackPanel>
+
+        <!-- ===================================================== -->
+        <!-- Right Column -->
+        <!-- ===================================================== -->
+
+        <Grid
+            Grid.Row="1"
+            Grid.Column="1"
+            RowDefinitions="Auto,16,*">
+
+            <!-- Segment Information -->
+
+            <Border
+                Grid.Row="0"
+                Classes="Card">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Classes="Section"
+                        Text="Segment Information"/>
+
+                    <Grid
+                        ColumnDefinitions="120,*"
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+
+                        <TextBlock
+                            Text="Id:"/>
+
+                        <TextBlock
+                            Grid.Column="1"
+                            FontWeight="Bold"
+                            Text="{Binding Project.CurrentSegment.Id}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Text="Priority:"/>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            FontWeight="Bold"
+                            Foreground="{Binding Project.CurrentSegment.PriorityBrush}"
+                            Text="{Binding Project.CurrentSegment.Priority}" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Text="Start:"/>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Text="{Binding Project.CurrentSegment.TimeDisplay}" />
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Text="Duration:"/>
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Text="{Binding Project.CurrentSegment.DurationDisplay}" />
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Text="Spread:"/>
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Text="{Binding Project.CurrentSegment.SpreadDisplay}" />
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+            <!-- Notes -->
+
+            <Border
+                Grid.Row="2"
+                Classes="Card">
+
+                <Grid RowDefinitions="Auto,*">
+
+                    <TextBlock
+                        Classes="Section"
+                        Text="Notes"/>
+
+                    <TextBox
+                        Grid.Row="1"
+                        AcceptsReturn="True"
+                        TextWrapping="Wrap"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Text="{Binding Project.CurrentSegment.Choice.Notes}"/>
+
+                </Grid>
+
+            </Border>
+
+        </Grid>
+    </Grid>
+</Window>

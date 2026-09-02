@@ -1,0 +1,2361 @@
+[
+  {
+    "SegmentId": 0,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:04:10.9665997-05:00"
+  },
+  {
+    "SegmentId": 1,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:04:11.4869351-05:00"
+  },
+  {
+    "SegmentId": 2,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:38.4857129-05:00"
+  },
+  {
+    "SegmentId": 3,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:47.4764954-05:00"
+  },
+  {
+    "SegmentId": 4,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:53.8927511-05:00"
+  },
+  {
+    "SegmentId": 5,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:33:21.3679432-05:00"
+  },
+  {
+    "SegmentId": 6,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:37:00.3697172-05:00"
+  },
+  {
+    "SegmentId": 7,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:27.596644-05:00"
+  },
+  {
+    "SegmentId": 8,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:15:48.6316655-05:00"
+  },
+  {
+    "SegmentId": 9,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:41.5648245-05:00"
+  },
+  {
+    "SegmentId": 10,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:44.1965865-05:00"
+  },
+  {
+    "SegmentId": 11,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:16:14.2072985-05:00"
+  },
+  {
+    "SegmentId": 12,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:32.780759-05:00"
+  },
+  {
+    "SegmentId": 13,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "still some russian",
+    "ReviewedOn": "2026-08-21T09:12:31.0039908-05:00"
+  },
+  {
+    "SegmentId": 14,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:54:59.6735564-05:00"
+  },
+  {
+    "SegmentId": 15,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:50.0203158-05:00"
+  },
+  {
+    "SegmentId": 16,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:00:01.1813048-05:00"
+  },
+  {
+    "SegmentId": 17,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:32:32.5098663-05:00"
+  },
+  {
+    "SegmentId": 18,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:23:03.3830672-05:00"
+  },
+  {
+    "SegmentId": 19,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-26T17:56:23.194851-05:00"
+  },
+  {
+    "SegmentId": 20,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "still some russian",
+    "ReviewedOn": "2026-08-21T09:12:55.7240989-05:00"
+  },
+  {
+    "SegmentId": 21,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:17:05.0427914-05:00"
+  },
+  {
+    "SegmentId": 22,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "still has russian",
+    "ReviewedOn": "2026-08-21T09:12:30.4922309-05:00"
+  },
+  {
+    "SegmentId": 23,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:51.9560817-05:00"
+  },
+  {
+    "SegmentId": 24,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "still some russian",
+    "ReviewedOn": "2026-08-21T09:12:29.1009388-05:00"
+  },
+  {
+    "SegmentId": 25,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:28:42.584279-05:00"
+  },
+  {
+    "SegmentId": 26,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:53.49332-05:00"
+  },
+  {
+    "SegmentId": 27,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:31.3565356-05:00"
+  },
+  {
+    "SegmentId": 28,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:17:27.1288104-05:00"
+  },
+  {
+    "SegmentId": 29,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-26T18:19:00.1323159-05:00"
+  },
+  {
+    "SegmentId": 30,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:26:59.2276995-05:00"
+  },
+  {
+    "SegmentId": 31,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:24:56.3986726-05:00"
+  },
+  {
+    "SegmentId": 32,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:00:40.3318641-05:00"
+  },
+  {
+    "SegmentId": 33,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:26:08.4395507-05:00"
+  },
+  {
+    "SegmentId": 34,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:30:51.1737781-05:00"
+  },
+  {
+    "SegmentId": 35,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:27:50.0450437-05:00"
+  },
+  {
+    "SegmentId": 36,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:24:46.591336-05:00"
+  },
+  {
+    "SegmentId": 37,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:00:26.7330551-05:00"
+  },
+  {
+    "SegmentId": 38,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:20:13.1104271-05:00"
+  },
+  {
+    "SegmentId": 39,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:12:50.0042494-05:00"
+  },
+  {
+    "SegmentId": 40,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:13:09.0600951-05:00"
+  },
+  {
+    "SegmentId": 41,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:24:27.6623387-05:00"
+  },
+  {
+    "SegmentId": 42,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:58.8533618-05:00"
+  },
+  {
+    "SegmentId": 43,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:47.6773812-05:00"
+  },
+  {
+    "SegmentId": 44,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:14:19.9291336-05:00"
+  },
+  {
+    "SegmentId": 45,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:24:31.1182285-05:00"
+  },
+  {
+    "SegmentId": 46,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:46.1339429-05:00"
+  },
+  {
+    "SegmentId": 47,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:47.2764063-05:00"
+  },
+  {
+    "SegmentId": 48,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-27T18:27:22.2558953-05:00"
+  },
+  {
+    "SegmentId": 49,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:35:05.720829-05:00"
+  },
+  {
+    "SegmentId": 50,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:57:59.0979482-05:00"
+  },
+  {
+    "SegmentId": 51,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:46.8923119-05:00"
+  },
+  {
+    "SegmentId": 52,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:22:32.8037283-05:00"
+  },
+  {
+    "SegmentId": 53,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:26:50.8388761-05:00"
+  },
+  {
+    "SegmentId": 54,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:41.3810191-05:00"
+  },
+  {
+    "SegmentId": 55,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:29:47.9568866-05:00"
+  },
+  {
+    "SegmentId": 56,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:28:32.4010871-05:00"
+  },
+  {
+    "SegmentId": 57,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:56.3160934-05:00"
+  },
+  {
+    "SegmentId": 58,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:39.7242032-05:00"
+  },
+  {
+    "SegmentId": 59,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:50.9642465-05:00"
+  },
+  {
+    "SegmentId": 60,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:48.4697088-05:00"
+  },
+  {
+    "SegmentId": 61,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:52.9080927-05:00"
+  },
+  {
+    "SegmentId": 62,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:38.9892871-05:00"
+  },
+  {
+    "SegmentId": 63,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:43.8369618-05:00"
+  },
+  {
+    "SegmentId": 64,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:22:40.8132449-05:00"
+  },
+  {
+    "SegmentId": 65,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:37.3977245-05:00"
+  },
+  {
+    "SegmentId": 66,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:35:24.2179379-05:00"
+  },
+  {
+    "SegmentId": 67,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:18:43.1973636-05:00"
+  },
+  {
+    "SegmentId": 68,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:09:05.8546961-05:00"
+  },
+  {
+    "SegmentId": 69,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:45.7405285-05:00"
+  },
+  {
+    "SegmentId": 70,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:27:01.8699039-05:00"
+  },
+  {
+    "SegmentId": 71,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:58.2847627-05:00"
+  },
+  {
+    "SegmentId": 72,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:53.6927665-05:00"
+  },
+  {
+    "SegmentId": 73,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:15:42.7052446-05:00"
+  },
+  {
+    "SegmentId": 74,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:55:16.7601694-05:00"
+  },
+  {
+    "SegmentId": 75,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:55.9239497-05:00"
+  },
+  {
+    "SegmentId": 76,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "part of russian audio",
+    "ReviewedOn": "2026-08-21T09:12:38.3183331-05:00"
+  },
+  {
+    "SegmentId": 77,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:31.9013743-05:00"
+  },
+  {
+    "SegmentId": 78,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "30s is good beggining, 60s is good ending. ",
+    "ReviewedOn": "2026-08-21T09:12:30.8291028-05:00"
+  },
+  {
+    "SegmentId": 79,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:59:48.8033525-05:00"
+  },
+  {
+    "SegmentId": 80,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:24:51.1345367-05:00"
+  },
+  {
+    "SegmentId": 81,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:20:02.2849555-05:00"
+  },
+  {
+    "SegmentId": 82,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:11:34.4431992-05:00"
+  },
+  {
+    "SegmentId": 83,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:33.3246976-05:00"
+  },
+  {
+    "SegmentId": 84,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:42.6534317-05:00"
+  },
+  {
+    "SegmentId": 85,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:11:52.9327756-05:00"
+  },
+  {
+    "SegmentId": 86,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:58:48.787091-05:00"
+  },
+  {
+    "SegmentId": 87,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:34.740593-05:00"
+  },
+  {
+    "SegmentId": 88,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:38.4762892-05:00"
+  },
+  {
+    "SegmentId": 89,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:52.1408119-05:00"
+  },
+  {
+    "SegmentId": 90,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:28:07.5245995-05:00"
+  },
+  {
+    "SegmentId": 91,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:44.7639052-05:00"
+  },
+  {
+    "SegmentId": 92,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:19:47.0630534-05:00"
+  },
+  {
+    "SegmentId": 93,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:21:06.6604152-05:00"
+  },
+  {
+    "SegmentId": 94,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:20:26.8021731-05:00"
+  },
+  {
+    "SegmentId": 95,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:12:02.7146119-05:00"
+  },
+  {
+    "SegmentId": 96,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:16:56.1268502-05:00"
+  },
+  {
+    "SegmentId": 97,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:17:48.1388109-05:00"
+  },
+  {
+    "SegmentId": 98,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:23:05.9006217-05:00"
+  },
+  {
+    "SegmentId": 99,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:57.6925527-05:00"
+  },
+  {
+    "SegmentId": 100,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:59:36.5809874-05:00"
+  },
+  {
+    "SegmentId": 101,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:37.7650454-05:00"
+  },
+  {
+    "SegmentId": 102,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:28.5971094-05:00"
+  },
+  {
+    "SegmentId": 103,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:33.860613-05:00"
+  },
+  {
+    "SegmentId": 104,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:28.7822747-05:00"
+  },
+  {
+    "SegmentId": 105,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:28:11.1776874-05:00"
+  },
+  {
+    "SegmentId": 106,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:40.0928468-05:00"
+  },
+  {
+    "SegmentId": 107,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:21:23.5585358-05:00"
+  },
+  {
+    "SegmentId": 108,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:23:03.9638632-05:00"
+  },
+  {
+    "SegmentId": 109,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:13:10.1008766-05:00"
+  },
+  {
+    "SegmentId": 110,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:08:43.5044047-05:00"
+  },
+  {
+    "SegmentId": 111,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-26T18:17:05.8841074-05:00"
+  },
+  {
+    "SegmentId": 112,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:32:07.3123796-05:00"
+  },
+  {
+    "SegmentId": 113,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:24:06.8602969-05:00"
+  },
+  {
+    "SegmentId": 114,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:22:16.4479274-05:00"
+  },
+  {
+    "SegmentId": 115,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:35.269336-05:00"
+  },
+  {
+    "SegmentId": 116,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:48.6606622-05:00"
+  },
+  {
+    "SegmentId": 117,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:15:29.9123455-05:00"
+  },
+  {
+    "SegmentId": 118,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:25:08.5809899-05:00"
+  },
+  {
+    "SegmentId": 119,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:35:57.7290012-05:00"
+  },
+  {
+    "SegmentId": 120,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:16:12.6533131-05:00"
+  },
+  {
+    "SegmentId": 121,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:51.556557-05:00"
+  },
+  {
+    "SegmentId": 122,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:51.3561031-05:00"
+  },
+  {
+    "SegmentId": 123,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:08:46.305936-05:00"
+  },
+  {
+    "SegmentId": 124,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:59:21.8830732-05:00"
+  },
+  {
+    "SegmentId": 125,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:20:12.0337889-05:00"
+  },
+  {
+    "SegmentId": 126,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:40.6363947-05:00"
+  },
+  {
+    "SegmentId": 127,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:36:28.5215439-05:00"
+  },
+  {
+    "SegmentId": 128,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:18:51.530585-05:00"
+  },
+  {
+    "SegmentId": 129,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "Not english or Russian? Sounds spanish",
+    "ReviewedOn": "2026-08-21T09:12:29.9641502-05:00"
+  },
+  {
+    "SegmentId": 130,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:37.1968704-05:00"
+  },
+  {
+    "SegmentId": 131,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:55.5321065-05:00"
+  },
+  {
+    "SegmentId": 132,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:54.5014747-05:00"
+  },
+  {
+    "SegmentId": 133,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:23:38.0078602-05:00"
+  },
+  {
+    "SegmentId": 134,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:49.2442212-05:00"
+  },
+  {
+    "SegmentId": 135,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:19:43.1464498-05:00"
+  },
+  {
+    "SegmentId": 136,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:54.9326765-05:00"
+  },
+  {
+    "SegmentId": 137,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:28:21.5915084-05:00"
+  },
+  {
+    "SegmentId": 138,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:33:53.6306537-05:00"
+  },
+  {
+    "SegmentId": 139,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:28:00.7274133-05:00"
+  },
+  {
+    "SegmentId": 140,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:52.5087467-05:00"
+  },
+  {
+    "SegmentId": 141,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:58:12.7301032-05:00"
+  },
+  {
+    "SegmentId": 142,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:58:23.9302574-05:00"
+  },
+  {
+    "SegmentId": 143,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:57:49.3784659-05:00"
+  },
+  {
+    "SegmentId": 144,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:56:08.0332012-05:00"
+  },
+  {
+    "SegmentId": 145,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:27:40.1429391-05:00"
+  },
+  {
+    "SegmentId": 146,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:13:31.8791171-05:00"
+  },
+  {
+    "SegmentId": 147,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "still russian at the end",
+    "ReviewedOn": "2026-08-21T09:12:49.8285086-05:00"
+  },
+  {
+    "SegmentId": 148,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:38.3015858-05:00"
+  },
+  {
+    "SegmentId": 149,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:53.3027625-05:00"
+  },
+  {
+    "SegmentId": 150,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:50.3970413-05:00"
+  },
+  {
+    "SegmentId": 151,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:27.9329609-05:00"
+  },
+  {
+    "SegmentId": 152,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:50.7741749-05:00"
+  },
+  {
+    "SegmentId": 153,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T11:07:21.4930735-05:00"
+  },
+  {
+    "SegmentId": 154,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:23:32.1482329-05:00"
+  },
+  {
+    "SegmentId": 155,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:52.7246126-05:00"
+  },
+  {
+    "SegmentId": 156,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:30.1322229-05:00"
+  },
+  {
+    "SegmentId": 157,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:27.4373397-05:00"
+  },
+  {
+    "SegmentId": 158,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "60 has no russian, but missing background music.",
+    "ReviewedOn": "2026-08-21T09:12:28.9328675-05:00"
+  },
+  {
+    "SegmentId": 159,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:32.9650623-05:00"
+  },
+  {
+    "SegmentId": 160,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:43.6367951-05:00"
+  },
+  {
+    "SegmentId": 161,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:57.3171581-05:00"
+  },
+  {
+    "SegmentId": 162,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:18:25.6149637-05:00"
+  },
+  {
+    "SegmentId": 163,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:59:09.3168532-05:00"
+  },
+  {
+    "SegmentId": 164,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:16:44.347339-05:00"
+  },
+  {
+    "SegmentId": 165,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:26:17.2386948-05:00"
+  },
+  {
+    "SegmentId": 166,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:20:23.974162-05:00"
+  },
+  {
+    "SegmentId": 167,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T11:05:10.0450719-05:00"
+  },
+  {
+    "SegmentId": 168,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:20:56.4267608-05:00"
+  },
+  {
+    "SegmentId": 169,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:43.108787-05:00"
+  },
+  {
+    "SegmentId": 170,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T17:57:39.0018141-05:00"
+  },
+  {
+    "SegmentId": 171,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:15:46.4161839-05:00"
+  },
+  {
+    "SegmentId": 172,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:10:58.803199-05:00"
+  },
+  {
+    "SegmentId": 173,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:31.1880221-05:00"
+  },
+  {
+    "SegmentId": 174,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "hard to tell between 45s and 60 which is better",
+    "ReviewedOn": "2026-08-21T09:12:29.6207099-05:00"
+  },
+  {
+    "SegmentId": 175,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:38.8205632-05:00"
+  },
+  {
+    "SegmentId": 176,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:09:45.3538813-05:00"
+  },
+  {
+    "SegmentId": 177,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:24:29.5518266-05:00"
+  },
+  {
+    "SegmentId": 178,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:25:31.2214179-05:00"
+  },
+  {
+    "SegmentId": 179,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-27T18:23:24.7494243-05:00"
+  },
+  {
+    "SegmentId": 180,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:13:54.407842-05:00"
+  },
+  {
+    "SegmentId": 181,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:40.2696594-05:00"
+  },
+  {
+    "SegmentId": 182,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:34.9329757-05:00"
+  },
+  {
+    "SegmentId": 183,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:26:33.9285628-05:00"
+  },
+  {
+    "SegmentId": 184,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:33.1428404-05:00"
+  },
+  {
+    "SegmentId": 185,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:32.5976383-05:00"
+  },
+  {
+    "SegmentId": 186,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:27.0930009-05:00"
+  },
+  {
+    "SegmentId": 187,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:31.5412874-05:00"
+  },
+  {
+    "SegmentId": 188,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:35.6201653-05:00"
+  },
+  {
+    "SegmentId": 189,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:48.2774646-05:00"
+  },
+  {
+    "SegmentId": 190,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:20:48.1008-05:00"
+  },
+  {
+    "SegmentId": 191,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:46.5161717-05:00"
+  },
+  {
+    "SegmentId": 192,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:54.7168074-05:00"
+  },
+  {
+    "SegmentId": 193,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:25:08.1435648-05:00"
+  },
+  {
+    "SegmentId": 194,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T11:07:57.6706819-05:00"
+  },
+  {
+    "SegmentId": 195,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:21:02.5269447-05:00"
+  },
+  {
+    "SegmentId": 196,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:39.340028-05:00"
+  },
+  {
+    "SegmentId": 197,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:26:35.4619497-05:00"
+  },
+  {
+    "SegmentId": 198,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:41.1974637-05:00"
+  },
+  {
+    "SegmentId": 199,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:38.6456838-05:00"
+  },
+  {
+    "SegmentId": 200,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:39.1567279-05:00"
+  },
+  {
+    "SegmentId": 201,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:45.3613549-05:00"
+  },
+  {
+    "SegmentId": 202,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:55.3245747-05:00"
+  },
+  {
+    "SegmentId": 203,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "still russian",
+    "ReviewedOn": "2026-08-21T09:12:59.0447861-05:00"
+  },
+  {
+    "SegmentId": 204,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:37.8121074-05:00"
+  },
+  {
+    "SegmentId": 205,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:22:01.1035207-05:00"
+  },
+  {
+    "SegmentId": 206,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-27T18:25:04.0541689-05:00"
+  },
+  {
+    "SegmentId": 207,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:43.2866716-05:00"
+  },
+  {
+    "SegmentId": 208,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-08T18:23:33.2872747-05:00"
+  },
+  {
+    "SegmentId": 209,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:30:20.0778803-05:00"
+  },
+  {
+    "SegmentId": 210,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:37.3649785-05:00"
+  },
+  {
+    "SegmentId": 211,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:19:36.948139-05:00"
+  },
+  {
+    "SegmentId": 212,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:10:08.1157885-05:00"
+  },
+  {
+    "SegmentId": 213,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:29.4444376-05:00"
+  },
+  {
+    "SegmentId": 214,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:54.0926067-05:00"
+  },
+  {
+    "SegmentId": 215,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:32.4207887-05:00"
+  },
+  {
+    "SegmentId": 216,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:39.9087356-05:00"
+  },
+  {
+    "SegmentId": 217,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:35.4529582-05:00"
+  },
+  {
+    "SegmentId": 218,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "still has some russian",
+    "ReviewedOn": "2026-08-21T09:12:37.9975003-05:00"
+  },
+  {
+    "SegmentId": 219,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:14:46.2944227-05:00"
+  },
+  {
+    "SegmentId": 220,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:56.7087249-05:00"
+  },
+  {
+    "SegmentId": 221,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:58.6607645-05:00"
+  },
+  {
+    "SegmentId": 222,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:19:24.8541225-05:00"
+  },
+  {
+    "SegmentId": 223,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:20:25.946111-05:00"
+  },
+  {
+    "SegmentId": 224,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:48.8601685-05:00"
+  },
+  {
+    "SegmentId": 225,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:38.1175148-05:00"
+  },
+  {
+    "SegmentId": 226,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:30:35.6397375-05:00"
+  },
+  {
+    "SegmentId": 227,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:21:27.7805566-05:00"
+  },
+  {
+    "SegmentId": 228,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:54.3087488-05:00"
+  },
+  {
+    "SegmentId": 229,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:24:04.299352-05:00"
+  },
+  {
+    "SegmentId": 230,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:31.7182442-05:00"
+  },
+  {
+    "SegmentId": 231,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:12:24.1064945-05:00"
+  },
+  {
+    "SegmentId": 232,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:14:18.5733127-05:00"
+  },
+  {
+    "SegmentId": 233,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:50.5880267-05:00"
+  },
+  {
+    "SegmentId": 234,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:17:10.4145038-05:00"
+  },
+  {
+    "SegmentId": 235,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:46.7083145-05:00"
+  },
+  {
+    "SegmentId": 236,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:13:08.7012297-05:00"
+  },
+  {
+    "SegmentId": 237,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:35.101506-05:00"
+  },
+  {
+    "SegmentId": 238,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:22:12.6669617-05:00"
+  },
+  {
+    "SegmentId": 239,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:25:54.0856556-05:00"
+  },
+  {
+    "SegmentId": 240,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:58.4700527-05:00"
+  },
+  {
+    "SegmentId": 241,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:32:13.8390639-05:00"
+  },
+  {
+    "SegmentId": 242,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:25:24.9503714-05:00"
+  },
+  {
+    "SegmentId": 243,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:13:10.3351374-05:00"
+  },
+  {
+    "SegmentId": 244,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:21:30.2352631-05:00"
+  },
+  {
+    "SegmentId": 245,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:57.1087231-05:00"
+  },
+  {
+    "SegmentId": 246,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:35.276045-05:00"
+  },
+  {
+    "SegmentId": 247,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:51.1563533-05:00"
+  },
+  {
+    "SegmentId": 248,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:44.3815969-05:00"
+  },
+  {
+    "SegmentId": 249,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:28.2700129-05:00"
+  },
+  {
+    "SegmentId": 250,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:34.3721408-05:00"
+  },
+  {
+    "SegmentId": 251,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:53.0927644-05:00"
+  },
+  {
+    "SegmentId": 252,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:37.5889147-05:00"
+  },
+  {
+    "SegmentId": 253,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "all are bad, not sure where this is in the show",
+    "ReviewedOn": "2026-08-21T09:12:29.2768848-05:00"
+  },
+  {
+    "SegmentId": 254,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:57.8865694-05:00"
+  },
+  {
+    "SegmentId": 255,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:27:19.1586087-05:00"
+  },
+  {
+    "SegmentId": 256,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:33:12.720463-05:00"
+  },
+  {
+    "SegmentId": 257,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:57.5087929-05:00"
+  },
+  {
+    "SegmentId": 258,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:19:28.618936-05:00"
+  },
+  {
+    "SegmentId": 259,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:23:47.8393328-05:00"
+  },
+  {
+    "SegmentId": 260,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-30T18:23:48.335009-05:00"
+  },
+  {
+    "SegmentId": 261,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:24:59.4718491-05:00"
+  },
+  {
+    "SegmentId": 262,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:34.0373234-05:00"
+  },
+  {
+    "SegmentId": 263,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:28.0932798-05:00"
+  },
+  {
+    "SegmentId": 264,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:09:44.3026975-05:00"
+  },
+  {
+    "SegmentId": 265,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:56.9092029-05:00"
+  },
+  {
+    "SegmentId": 266,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:40.8203099-05:00"
+  },
+  {
+    "SegmentId": 267,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:27.7571246-05:00"
+  },
+  {
+    "SegmentId": 268,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:25:59.4317174-05:00"
+  },
+  {
+    "SegmentId": 269,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:28:26.8450475-05:00"
+  },
+  {
+    "SegmentId": 270,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:47.0851081-05:00"
+  },
+  {
+    "SegmentId": 271,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-26T18:14:53.1002559-05:00"
+  },
+  {
+    "SegmentId": 272,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:45.941632-05:00"
+  },
+  {
+    "SegmentId": 273,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:31:08.8716521-05:00"
+  },
+  {
+    "SegmentId": 274,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "60s is the only one without russian",
+    "ReviewedOn": "2026-08-31T18:04:09.2965683-05:00"
+  },
+  {
+    "SegmentId": 275,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:13:23.4511822-05:00"
+  },
+  {
+    "SegmentId": 276,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-31T18:03:37.9489382-05:00"
+  },
+  {
+    "SegmentId": 277,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:47.8775593-05:00"
+  },
+  {
+    "SegmentId": 278,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:23:40.9407366-05:00"
+  },
+  {
+    "SegmentId": 279,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:16:14.8198404-05:00"
+  },
+  {
+    "SegmentId": 280,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:26:51.6790318-05:00"
+  },
+  {
+    "SegmentId": 281,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:50.2046546-05:00"
+  },
+  {
+    "SegmentId": 282,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-26T18:14:05.0927059-05:00"
+  },
+  {
+    "SegmentId": 283,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T11:06:39.5745986-05:00"
+  },
+  {
+    "SegmentId": 284,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:32.2282662-05:00"
+  },
+  {
+    "SegmentId": 285,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:25:12.8376326-05:00"
+  },
+  {
+    "SegmentId": 286,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:43.4601073-05:00"
+  },
+  {
+    "SegmentId": 287,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:41.7407013-05:00"
+  },
+  {
+    "SegmentId": 288,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:33:38.5838576-05:00"
+  },
+  {
+    "SegmentId": 289,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:27.2724038-05:00"
+  },
+  {
+    "SegmentId": 290,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:37.532943-05:00"
+  },
+  {
+    "SegmentId": 291,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:34.2129232-05:00"
+  },
+  {
+    "SegmentId": 292,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:58.0764065-05:00"
+  },
+  {
+    "SegmentId": 293,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:45.1482931-05:00"
+  },
+  {
+    "SegmentId": 294,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:56.5180861-05:00"
+  },
+  {
+    "SegmentId": 295,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:18:50.4430254-05:00"
+  },
+  {
+    "SegmentId": 296,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:49.0527597-05:00"
+  },
+  {
+    "SegmentId": 297,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:42.1085879-05:00"
+  },
+  {
+    "SegmentId": 298,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:34.5644525-05:00"
+  },
+  {
+    "SegmentId": 299,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:27:02.2074518-05:00"
+  },
+  {
+    "SegmentId": 300,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:44.0126217-05:00"
+  },
+  {
+    "SegmentId": 301,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:14:44.5967334-05:00"
+  },
+  {
+    "SegmentId": 302,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:32.0528446-05:00"
+  },
+  {
+    "SegmentId": 303,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:31:29.8375323-05:00"
+  },
+  {
+    "SegmentId": 304,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:45.5413335-05:00"
+  },
+  {
+    "SegmentId": 305,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:42.4769804-05:00"
+  },
+  {
+    "SegmentId": 306,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:55.1265048-05:00"
+  },
+  {
+    "SegmentId": 307,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-26T18:14:27.3955458-05:00"
+  },
+  {
+    "SegmentId": 308,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:18:00.4211681-05:00"
+  },
+  {
+    "SegmentId": 309,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:38.1563263-05:00"
+  },
+  {
+    "SegmentId": 310,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-22T18:07:58.2984606-05:00"
+  },
+  {
+    "SegmentId": 311,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:28.4373353-05:00"
+  },
+  {
+    "SegmentId": 312,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:33.6846629-05:00"
+  },
+  {
+    "SegmentId": 313,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:33.5018842-05:00"
+  },
+  {
+    "SegmentId": 314,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:44.9567933-05:00"
+  },
+  {
+    "SegmentId": 315,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:51.7567312-05:00"
+  },
+  {
+    "SegmentId": 316,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:39.5331849-05:00"
+  },
+  {
+    "SegmentId": 317,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:30.3167298-05:00"
+  },
+  {
+    "SegmentId": 318,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-29T18:23:03.6701166-05:00"
+  },
+  {
+    "SegmentId": 319,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T18:27:53.6233442-05:00"
+  },
+  {
+    "SegmentId": 320,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:48.0796897-05:00"
+  },
+  {
+    "SegmentId": 321,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-25T18:18:44.1118533-05:00"
+  },
+  {
+    "SegmentId": 322,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:28:39.4544991-05:00"
+  },
+  {
+    "SegmentId": 323,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:46.3255319-05:00"
+  },
+  {
+    "SegmentId": 324,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:42.3022358-05:00"
+  },
+  {
+    "SegmentId": 325,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-28T18:18:10.7369337-05:00"
+  },
+  {
+    "SegmentId": 326,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:41.9330403-05:00"
+  },
+  {
+    "SegmentId": 327,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-26T18:15:41.2759019-05:00"
+  },
+  {
+    "SegmentId": 328,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T11:05:44.5739767-05:00"
+  },
+  {
+    "SegmentId": 329,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:49.4443938-05:00"
+  },
+  {
+    "SegmentId": 330,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:56.1247887-05:00"
+  },
+  {
+    "SegmentId": 331,
+    "SelectedRun": "20s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:44.5725489-05:00"
+  },
+  {
+    "SegmentId": 332,
+    "SelectedRun": "60s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:30.6681492-05:00"
+  },
+  {
+    "SegmentId": 333,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:52.3297375-05:00"
+  },
+  {
+    "SegmentId": 334,
+    "SelectedRun": "30s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:29.7890781-05:00"
+  },
+  {
+    "SegmentId": 335,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:40.4602571-05:00"
+  },
+  {
+    "SegmentId": 336,
+    "SelectedRun": "45s",
+    "Status": 1,
+    "Notes": "",
+    "ReviewedOn": "2026-08-21T09:12:41.0045901-05:00"
+  }
+]

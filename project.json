@@ -1,0 +1,14 @@
+﻿{
+  "name": "Junkyard Wars - At the Movies",
+
+  "reviewFolder": "review",
+
+  "chunkRuns": [
+    "20s",
+    "30s",
+    "45s",
+    "60s"
+  ],
+
+  "speaker": 2
+}
