@@ -180,30 +180,27 @@ def apply_boundary_crossfades(
 
     fade_out, fade_in = build_equal_power_fades(fade_samples)
 
+    region = mixed_region.copy()
+
     # Start boundary: original output -> mixed region.
     if start_sample > 0:
         length = min(fade_samples, start_sample)
         previous = output[start_sample - length:start_sample].copy()
-        output[start_sample:start_sample + length] = (
+        region[:length] = (
             previous * fade_out[-length:, None]
-            + mixed_region[:length] * fade_in[-length:, None]
+            + region[:length] * fade_in[-length:, None]
         )
-    else:
-        length = 0
 
     # End boundary: mixed region -> original output.
     if end_sample < len(output):
         length = min(fade_samples, len(output) - end_sample)
         following = output[end_sample:end_sample + length].copy()
-        output[end_sample - length:end_sample] = (
-            mixed_region[-length:] * fade_out[:length, None]
+        region[-length:] = (
+            region[-length:] * fade_out[:length, None]
             + following * fade_in[:length, None]
         )
 
-    output[start_sample + length if start_sample > 0 else start_sample:end_sample - (length if end_sample < len(output) else 0)] = mixed_region[
-        (fade_samples if start_sample > 0 else 0):
-        -(fade_samples if end_sample < len(output) else 0) or None
-    ]
+    output[start_sample:end_sample] = region
 
 
 def combine_audio(
