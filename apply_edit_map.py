@@ -18,6 +18,11 @@ class Edit:
     line_number: int
 
 
+# Keep transitions short so the edit does not create clicks while preserving
+# the character of the combined region.
+BOUNDARY_FADE_SECONDS = 0.050
+
+
 def load_edit_map(csv_path: Path) -> list[Edit]:
     edits = []
 
@@ -137,6 +142,85 @@ def print_audio_info(name: str, info: dict):
     print(f"  Subtype:     {info['subtype']}")
 
 
+def build_equal_power_fades(length: int) -> tuple[np.ndarray, np.ndarray]:
+    if length <= 0:
+        return np.empty(0, dtype=np.float32), np.empty(0, dtype=np.float32)
+
+    theta = np.linspace(
+        0.0,
+        np.pi / 2.0,
+        length,
+        dtype=np.float32,
+    )
+
+    return np.cos(theta), np.sin(theta)
+
+
+def apply_boundary_crossfades(
+    output: np.ndarray,
+    mixed_region: np.ndarray,
+    start_sample: int,
+    end_sample: int,
+    sample_rate: int,
+):
+    """Blend a mixed region into the surrounding output without clicks."""
+    region_length = end_sample - start_sample
+
+    if region_length <= 0:
+        return
+
+    fade_samples = min(
+        seconds_to_sample(BOUNDARY_FADE_SECONDS, sample_rate),
+        region_length // 2,
+    )
+
+    if fade_samples <= 0:
+        output[start_sample:end_sample] = mixed_region
+        return
+
+    fade_out, fade_in = build_equal_power_fades(fade_samples)
+
+    # Start boundary: original output -> mixed region.
+    if start_sample > 0:
+        length = min(fade_samples, start_sample)
+        previous = output[start_sample - length:start_sample].copy()
+        output[start_sample:start_sample + length] = (
+            previous * fade_out[-length:, None]
+            + mixed_region[:length] * fade_in[-length:, None]
+        )
+    else:
+        length = 0
+
+    # End boundary: mixed region -> original output.
+    if end_sample < len(output):
+        length = min(fade_samples, len(output) - end_sample)
+        following = output[end_sample:end_sample + length].copy()
+        output[end_sample - length:end_sample] = (
+            mixed_region[-length:] * fade_out[:length, None]
+            + following * fade_in[:length, None]
+        )
+
+    output[start_sample + length if start_sample > 0 else start_sample:end_sample - (length if end_sample < len(output) else 0)] = mixed_region[
+        (fade_samples if start_sample > 0 else 0):
+        -(fade_samples if end_sample < len(output) else 0) or None
+    ]
+
+
+def combine_audio(
+    stitched_region: np.ndarray,
+    silence_region: np.ndarray,
+) -> np.ndarray:
+    """Mix both usable reconstructions together, matching Audacity's basic mix."""
+    mixed = stitched_region + silence_region
+
+    peak = float(np.max(np.abs(mixed))) if mixed.size else 0.0
+
+    if peak > 1.0:
+        mixed = mixed / peak
+
+    return mixed.astype(np.float32, copy=False)
+
+
 def apply_edits(
     stitched_audio: np.ndarray,
     silence_based_audio: np.ndarray,
@@ -188,8 +272,30 @@ def apply_edits(
             stats["clear"] += 1
 
         elif edit.action == "combine":
-            # Part 1 intentionally leaves these unchanged.
-            stats["combine pending"] += 1
+            if end_sample > len(silence_based_audio):
+                raise ValueError(
+                    f"CSV line {edit.line_number}: "
+                    f"Track 2 does not contain enough audio "
+                    f"for this edit."
+                )
+
+            stitched_region = output[start_sample:end_sample].copy()
+            silence_region = silence_based_audio[start_sample:end_sample]
+
+            mixed_region = combine_audio(
+                stitched_region,
+                silence_region,
+            )
+
+            apply_boundary_crossfades(
+                output=output,
+                mixed_region=mixed_region,
+                start_sample=start_sample,
+                end_sample=end_sample,
+                sample_rate=sample_rate,
+            )
+
+            stats["combine"] += 1
 
         elif edit.action == "further analysis needed":
             # Leave stitched audio unchanged.
@@ -316,8 +422,6 @@ def main():
         dtype="float32",
         always_2d=True,
     )
-
-    print("Loading silence-based audio...")
 
     print("Loading silence-based audio...")
 
