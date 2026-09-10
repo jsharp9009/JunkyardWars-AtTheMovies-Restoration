@@ -1,13 +1,17 @@
 # Junkyard Wars: *At the Movies* Restoration
 
 > [!IMPORTANT]
-> **DISCLAIMER** This project has been and will continue to be heavily generated with AI assistance. The goal is both to restore this lost episode and to explore how far modern AI-assisted workflows can be pushed when the surviving source is severely compromised. This README also serves as project documentation and as a compact record of the decisions, experiments, and workflow developed throughout the restoration.
+> **DISCLAIMER** This project has been and will continue to be heavily generated with AI assistance. The goal is both to restore this lost episode and to explore how far modern AI-assisted workflows can be pushed when the surviving source is severely compromised. This README serves as project documentation and as a compact record of the decisions, experiments, and workflow developed throughout the restoration.
 
 ## Project Status
 
-**Current phase: Targeted manual restoration and quality review.**
+**Current phase: AI-assisted reconstruction planning.**
 
-The human-reviewed ensemble reconstruction has been completed and successfully assembled into an episode-length audio track. A separate silence-based reconstruction, previously rejected as the primary workflow because it recovered less English overall, is now being retained as a **targeted rescue source** for localized improvements.
+The source-separation and human-selection stages are complete. We now have a primary episode-length reconstruction assembled from the best portions of four MossFormer2 separation runs, plus a separate silence-based reconstruction retained as a targeted rescue source.
+
+The important next realization is that separation alone cannot recover every section of the original English soundtrack. The surviving English is still badly muffled or incomplete in some places. The next phase is therefore to identify sections that remain unrecoverable and investigate **selective AI-assisted reconstruction of the missing or severely degraded English speech**.
+
+The project is **not** ready for final video/audio recombination. The video will remain separate until the English soundtrack restoration is substantially complete.
 
 The project is an attempt to restore the lost *Junkyard Wars* episode **"At the Movies"** from a surviving Russian-dubbed copy.
 
@@ -29,6 +33,7 @@ The long-term objective is to recover as much of the original English soundtrack
 - Keep the workflow reproducible and documented.
 - Prioritize restoration quality over processing speed.
 - Preserve the history of important experiments, including approaches that were abandoned or later repurposed.
+- Preserve genuinely recovered audio rather than unnecessarily processing the entire episode through additional AI models.
 
 This is primarily a restoration workflow for one unusually difficult piece of lost media rather than a polished general-purpose product.
 
@@ -47,7 +52,7 @@ The first major goal was:
 
 > **Separate the Russian narration from the underlying English soundtrack as effectively as possible.**
 
-That eventually led to a broader realization: no single source-separation run produced the best result everywhere in the episode.
+That eventually led to a broader realization: no single source-separation run produced the best result everywhere in the episode, and some portions cannot be recovered adequately through separation alone.
 
 ---
 
@@ -90,8 +95,8 @@ Surviving Russian-dubbed episode
        original episode timeline
             |
             v
- Validate and write primary
-   episode-length reconstruction
+ Validate primary episode-length
+       reconstruction
             |
             v
  Compare problem areas against
@@ -99,11 +104,26 @@ Surviving Russian-dubbed episode
             |
             v
  Targeted manual restoration
-       in Audacity
             |
             v
- Future processing and final
-      episode reconstruction
+ Identify remaining unrecoverable
+       or badly muffled English
+            |
+            v
+ AI-assisted speech/audio reconstruction
+            |
+            v
+ Restore ambience/music/transitions
+       where necessary
+            |
+            v
+ Final English soundtrack
+            |
+            v
+ Synchronize with original video
+            |
+            v
+ Final restored episode
 ```
 
 ---
@@ -137,6 +157,12 @@ The review application's namespace is:
 JunkyardRestorationStudio
 ```
 
+## Manual restoration
+
+- Audacity
+
+Future reconstruction work will favor local, free/open-source models and tools where practical.
+
 ---
 
 # Early Approaches and Experiments
@@ -147,7 +173,7 @@ Several approaches were considered or tested before the current pipeline stabili
 
 A conventional editing approach was considered for reducing the louder Russian narration. It was not sufficient for the core problem because the Russian and English audio overlap heavily in time and frequency.
 
-Audacity is now being used again at a later stage for targeted manual comparison and localized restoration rather than as the primary separation method.
+Audacity is now used at a later stage for targeted manual comparison, localized restoration, and evaluation of recovered material rather than as the primary separation method.
 
 ## UVR models
 
@@ -213,6 +239,8 @@ Each processed chunk produces two separated outputs. The project concentrated pr
 
 Intermediate chunk files are retained for reproducibility and future experimentation.
 
+The model is computationally expensive enough that long-running processing is intentionally resumable and chunk files are retained rather than discarded after stitching.
+
 ---
 
 # Fixed-Length Chunking Experiments
@@ -249,9 +277,11 @@ A run that recovered English dialogue particularly well in one region could perf
 
 The separated chunks from an individual run must be reconstructed into a continuous track.
 
-The earlier processing workflow used overlapping chunks and equal-power crossfading to reduce audible boundaries.
+The stitching workflow uses overlapping chunks and equal-power crossfading to reduce audible boundaries.
 
 The resulting complete tracks became the canonical candidates for comparison.
+
+A small number of isolated audible anomalies were found during later spot checks, but broader listening did not reveal a systematic boundary problem, so the existing stitching approach was retained.
 
 ---
 
@@ -295,6 +325,8 @@ A typical comparison contains:
 45s.wav
 60s.wav
 ```
+
+The comparison workflow also established that a disagreement between runs is not automatically evidence that one run is bad. A run that differs substantially may have recovered information the other runs lost.
 
 ---
 
@@ -343,16 +375,7 @@ review/
     0336/
 ```
 
-Each numbered folder contains:
-
-```text
-20s.wav
-30s.wav
-45s.wav
-60s.wav
-metadata.json
-comparison.json
-```
+Each numbered folder contains the four candidate WAV files plus metadata and comparison information.
 
 ## Review padding
 
@@ -402,6 +425,8 @@ The application supports:
 - progress information;
 - workflow-oriented UI cleanup.
 
+The review application was deliberately kept focused on human decision-making rather than attempting to automate the final selection.
+
 ---
 
 # `choices.json`
@@ -440,7 +465,7 @@ The notes are retained because imperfect segments may need to be revisited durin
 
 # Pairwise Difference Scoring
 
-After reviewing approximately twenty segments, the review application gained a feature for calculating pairwise differences between the four candidate runs.
+The review application gained a feature for calculating pairwise differences between the four candidate runs.
 
 The reviewer wanted to identify situations where one run was substantially different from the others.
 
@@ -453,6 +478,8 @@ The feature provides per-run agreement or disagreement indicators such as:
 - outlier.
 
 This does not replace human judgment. It directs attention toward unusual candidates that may either be worse or may have recovered useful information the other runs lost.
+
+No additional `Diff` properties were added to the project JSON data as part of this feature.
 
 ---
 
@@ -474,46 +501,11 @@ This is the central result of the original review stage.
 
 # Final Audio Stitching
 
-## `stitch_selected.py`
+The selected review segments were reconstructed into one continuous episode-length track.
 
-After the human comparison was complete, a new script was built to reconstruct one continuous episode-length audio file from the selected review clips.
+The reconstruction process validates the review data and places each selected clip according to its timeline metadata rather than simply concatenating folders in numerical order.
 
-The script was developed carefully because several details could not safely be assumed.
-
-## Validation
-
-The stitcher validates:
-
-- `choices.json`;
-- `project.json`;
-- the `review` folder;
-- numbered segment folders;
-- segment selections;
-- `metadata.json`;
-- the selected WAV file for each segment.
-
-An early implementation incorrectly assumed `choices.json` was a dictionary. The actual file is a JSON array, so the stitcher maps:
-
-```text
-SegmentId -> SelectedRun
-```
-
-The completed validation found:
-
-```text
-337 choices
-337 segment folders
-```
-
-## Timeline placement
-
-The stitcher reads each segment's metadata and builds a chronological placement plan.
-
-The metadata timeline—not the folder number—is treated as the source of truth.
-
-The selected clips are placed back onto the episode timeline rather than simply concatenated.
-
-The final placement validation reported:
+The completed placement validation reported:
 
 ```text
 Segments placed: 337
@@ -521,7 +513,9 @@ Overlapping placements: 0
 Final timeline duration: 5641.475s
 ```
 
-The resulting primary episode-length reconstruction is close enough to the expected episode duration to provide confidence in the timeline reconstruction.
+The primary reconstruction is a 16 kHz mono floating-point track and provides the main working source for subsequent restoration.
+
+The exact reconstruction tooling and supporting scripts remain in the repository so the result can be reproduced rather than treated as an opaque final file.
 
 ---
 
@@ -550,277 +544,281 @@ During review of the completed human-selected reconstruction, the silence-based 
 
 Conversely, the human-selected stitched reconstruction remains superior in many other locations.
 
-The silence-based reconstruction is therefore no longer treated as a failed experiment. It is now retained as an additional **targeted rescue source**.
+The silence-based reconstruction is therefore no longer treated as a failed experiment. It is retained as an additional **targeted rescue source**.
+
+---
+
+# Edit-Map and Targeted Rescue Work
+
+A manual review note set was converted into an edit map for localized comparison between the primary stitched reconstruction and the silence-based reconstruction.
+
+The edit map contains 112 nonblank review entries with the following broad classifications:
+
+```text
+combine:              60
+ take 2:              13
+ clear:               23
+ further analysis:    16
+```
+
+The meanings are intentionally conservative:
+
+- `1` — primary stitched track;
+- `2` — silence-based track;
+- `2 keep` — both sources contain useful material and should be investigated as a combination, not blindly replaced;
+- `1 russian` — the primary region is dominated by Russian and should normally be cleared unless a rescue is explicitly indicated;
+- `1 russian 2 keep` — the primary material should be replaced with the alternate source;
+- `take 2` — use the silence-based source for that region;
+- `clear` — intentionally remove the region from the working reconstruction;
+- `further analysis needed` — preserve the primary source until the region can be investigated further.
+
+## `apply_edit_map.py`
+
+The canonical edit-map script applies those decisions to the episode-length tracks.
+
+Its current behavior includes:
+
+- validating the edit-map timestamps;
+- loading the primary and silence-based tracks;
+- resampling the silence-based source to the primary 16 kHz format when necessary;
+- replacing explicitly selected regions;
+- clearing explicitly marked regions;
+- leaving unresolved regions unchanged;
+- combining regions where both sources contain useful information;
+- peak-protecting combined regions;
+- using short equal-power boundary crossfades to reduce transition artifacts.
+
+The script successfully produced the targeted-restoration working track.
+
+A small number of isolated anomalies were noticed during listening, but subsequent spot checking did not reveal a systematic pop/click problem. The current 50 ms equal-power boundary crossfade strategy was therefore retained without further modification.
 
 ---
 
 # Current Restoration Workflow
 
-The project now has two distinct stages of human decision-making.
-
-## Stage 1: Four-Run Segment Selection
-
-**Completed.**
-
-For each of the 337 review segments, the following candidates were compared:
+The project has now moved beyond source selection. The current conceptual pipeline is:
 
 ```text
-20s
-30s
-45s
-60s
+1. Damaged Russian-dubbed source
+          |
+2. MossFormer2 separation
+          |
+3. Multiple chunk-size runs
+          |
+4. 337-segment human ensemble
+          |
+5. Targeted rescue from alternate reconstruction
+          |
+6. Identify unrecoverable / badly muffled English
+          |
+7. AI-assisted speech/audio reconstruction   <-- CURRENT NEXT PHASE
+          |
+8. Restore ambience/music/transitions where needed
+          |
+9. Final English soundtrack
+          |
+10. Synchronize with original video
+          |
+11. Final restored episode
 ```
 
-The preferred candidate was selected and assembled into the primary reconstruction.
+The important distinction is that the first five stages are about **recovering information that already exists somewhere in the damaged source**. The next stages may require **reconstructing information that cannot be adequately recovered from the source audio alone**.
 
-## Stage 2: Targeted Alternate-Source Recovery
+---
 
-**Currently in progress.**
+# Why AI Reconstruction Is the Next Step
 
-The silence-based reconstruction is not being added to the review application as a fifth candidate, and the 337-segment review will not be restarted.
+The current working audio is substantially better than the original Russian-dubbed mix, but it is still not a clean English soundtrack.
 
-Instead:
+Some English dialogue remains:
+
+- muffled;
+- masked by residual Russian speech;
+- incomplete;
+- spectrally damaged;
+- difficult or impossible to understand from the surviving waveform alone.
+
+The purpose of the next phase is not simply to make the entire track sound "nicer." The goal is to determine where the surviving information is insufficient and then investigate whether modern local AI methods can reconstruct the missing English speech while remaining faithful to the surviving evidence.
+
+This is a **selective reconstruction problem**, not a global enhancement problem.
+
+A good recovered section should not be replaced merely because an AI model can make it louder or cleaner.
+
+---
+
+# AI-Assisted Reconstruction Principles
+
+The next phase will follow several rules.
+
+## Preserve good recovered audio
+
+If a section already contains understandable English, it should remain the authoritative source unless there is a compelling reason to improve it.
+
+## Do not globally process the 94-minute track
+
+A whole-episode AI enhancement pass risks changing speech that is already correct, inventing details, and making the restoration less faithful to the source.
+
+AI processing should be limited to sections that genuinely require reconstruction or severe restoration.
+
+## Use surviving audio as evidence
+
+The damaged English signal may still provide information about:
+
+- exact timing;
+- syllable rhythm;
+- speaker identity;
+- intonation;
+- word fragments;
+- sentence length;
+- surrounding ambience;
+- music and effects.
+
+Existing recovered English from nearby or alternate sections may also provide useful reference material.
+
+## Separate transcription from reconstruction
+
+Knowing what a speaker probably said and generating audio that actually matches the original recording are different problems.
+
+The workflow should therefore treat:
+
+1. linguistic reconstruction;
+2. speaker/voice reconstruction;
+3. timing and prosody;
+4. acoustic restoration;
+5. ambience/music/effects restoration
+
+as related but distinct problems rather than assuming one model can solve all of them.
+
+## Prefer evidence over invention
+
+Where the original wording cannot be established with reasonable confidence, the project should preserve uncertainty rather than silently inventing dialogue.
+
+The goal is restoration, not a new performance that merely sounds plausible.
+
+---
+
+# AI Reconstruction Phase: Planned Investigation
+
+The next technical investigation will focus on local/free/open-source approaches for severely degraded speech, including combinations of:
+
+- speech enhancement and dereverberation;
+- source-conditioned speech reconstruction;
+- speech inpainting or missing-audio reconstruction;
+- voice cloning or speaker adaptation where justified by surviving material;
+- timing/prosody-controlled speech synthesis;
+- phoneme- or transcript-guided reconstruction;
+- spectral restoration and bandwidth extension;
+- selective blending of reconstructed speech with surviving source audio;
+- ambience and background reconstruction where speech replacement leaves gaps.
+
+No specific model has yet been selected for this phase. Model selection should be based on actual tests against representative damaged sections of this episode rather than on generic benchmark claims.
+
+The first experiments should use short, representative problem clips and compare results against the surviving evidence before any model is applied to the full episode.
+
+---
+
+# Reference Material for Reconstruction
+
+The project already contains useful evidence that can potentially constrain future reconstruction:
+
+- the original Russian-dubbed source;
+- the primary human-selected separation;
+- the silence-based alternate reconstruction;
+- the four fixed-length MossFormer2 runs;
+- localized edit-map decisions;
+- Whisper transcription results used during earlier comparison;
+- nearby recovered English speech from the same episode;
+- timing and segment metadata;
+- human review notes identifying especially problematic regions.
+
+These sources should be treated as evidence with different reliability rather than simply mixed together.
+
+---
+
+# Final Video Synchronization
+
+Video recombination is intentionally postponed.
+
+The original video should remain separate while the English soundtrack is being reconstructed. There is no reason to repeatedly remux the video during audio experimentation, and doing so would add unnecessary complexity to a workflow that is still changing.
+
+Only after the English soundtrack is substantially restored should the project move to:
 
 ```text
-Primary stitched reconstruction
-            |
-            v
-    Listen through the episode
-            |
-            v
-      Identify a problem area
-            |
-            v
-Compare the same area against the
-  silence-based reconstruction
-            |
-      +-----+-----+
-      |           |
-      v           v
-Primary wins   Alternate wins
-      |           |
-      v           v
-Keep primary  Replace locally
+Final English audio
+        +
+Original video
+        |
+        v
+Final restored episode
 ```
 
-A third outcome is also possible:
-
-```text
-Both versions contain useful information
-            |
-            v
-Mark for additional investigation
-or perform a carefully evaluated blend
-```
-
-The purpose of this stage is not to conduct another complete episode review. The silence-based version is consulted only when the primary reconstruction has an identified problem.
-
-This preserves the substantial work already completed while allowing previously generated material to provide additional recovery opportunities.
+Synchronization will be treated as a final production step rather than part of the reconstruction loop.
 
 ---
 
-# Audacity Restoration Project
+# Reproducibility and Preservation
 
-The current manual restoration stage will be performed in Audacity.
+The project deliberately keeps intermediate processing results because discarded intermediate material may become useful later.
 
-The project begins with two aligned source tracks:
+Important principles include:
 
-```text
-Track 1: Human-selected stitched reconstruction
-Track 2: Silence-based reconstruction
-```
+- retain separated chunks;
+- retain complete separation runs;
+- retain human review decisions;
+- retain alternate reconstructions;
+- keep restoration scripts in the repository;
+- avoid modifying the only copy of a source;
+- document abandoned approaches and why they were abandoned;
+- make processing resumable where practical.
 
-The human-selected reconstruction is the primary track.
-
-The silence-based track acts as a comparison and rescue source.
-
-## Intended workflow
-
-1. Listen through the primary reconstruction normally.
-2. Stop when a significant problem is encountered.
-3. Compare the same region against the silence-based reconstruction.
-4. Decide whether the alternate version provides a genuine improvement.
-5. Keep the primary audio if it remains better.
-6. Replace only the localized region when the alternate version is clearly superior.
-7. Mark regions where both versions contain useful but different information.
-8. Listen across every edited boundary to ensure the transition is natural.
-
-The original aligned source tracks should be preserved before destructive edits are made.
+The repository is the canonical home for project scripts and documentation.
 
 ---
 
-# Local Replacement Strategy
+# Current Milestones
 
-Neither complete reconstruction should be considered universally better.
-
-When the silence-based version is clearly superior in a localized region, only that portion should be replaced.
-
-Conceptually:
-
-```text
-Primary reconstruction:
-
-────────────────────────────────────────────
-
-Problem found:
-
-                 [ problem ]
-
-Silence-based version:
-
-                 [ improved ]
-
-Final restoration:
-
-────────────────[replacement]───────────────
-```
-
-Replacement boundaries should preferably occur at natural pauses, quiet areas, or other locations where a transition is less noticeable.
-
-Short fades or crossfades may be used when necessary to maintain continuity.
+- [x] Extract and preserve source audio.
+- [x] Establish local MossFormer2/ClearVoice separation workflow.
+- [x] Complete 20-second separation run.
+- [x] Complete 30-second separation run.
+- [x] Complete 45-second separation run.
+- [x] Complete 60-second separation run.
+- [x] Stitch and compare fixed-length runs.
+- [x] Develop quiet-boundary review segmentation.
+- [x] Reduce review workload to 337 segments.
+- [x] Build Junkyard Restoration Studio review application.
+- [x] Complete all 337 human reviews.
+- [x] Assemble the human-curated episode-length reconstruction.
+- [x] Generate and evaluate the silence-based full reconstruction.
+- [x] Retain silence-based reconstruction as a targeted rescue source.
+- [x] Perform targeted alternate-source/edit-map processing.
+- [x] Produce a working reconstruction containing localized rescue edits.
+- [ ] Identify all sections that still require genuine reconstruction.
+- [ ] Evaluate local/free/open-source AI speech reconstruction approaches.
+- [ ] Reconstruct selected missing or severely muffled English dialogue.
+- [ ] Restore ambience/music/transitions where necessary.
+- [ ] Assemble the final English soundtrack.
+- [ ] Synchronize the restored soundtrack with the original video.
+- [ ] Produce the final restored episode.
 
 ---
 
-# Important Mixing Rule
+# Important Project Decision
 
-The two complete reconstructions should **not automatically be overlaid across the entire episode**.
+The work completed so far should not be viewed as a failure because the resulting English track is still imperfect.
 
-A full-track overlay could:
+The separation and review stages achieved their actual purpose: they extracted and preserved as much usable information as possible from the surviving Russian-dubbed source.
 
-- reintroduce Russian narration;
-- double background noise;
-- create phase or comb-filtering artifacts;
-- produce echo when the reconstructions differ slightly;
-- combine separation artifacts from both versions.
+The project is now at the point where additional improvement requires a different class of techniques.
 
-The silence-based reconstruction is therefore being used primarily for **comparison and localized replacement**, not as a permanent full-track support layer.
+The next challenge is therefore not:
 
-Any blending should be evaluated on a case-by-case basis.
+> **"Which separation run should we use?"**
 
----
+That question has largely been answered.
 
-# What to Look for During the Current Review
+The next challenge is:
 
-The goal is not to catalog every missing English word. Much of the original English remains incomplete, and documenting every missing word would be impractical.
+> **"Where is the original English information still present but severely damaged, and where has it effectively been lost — and what can local AI reconstruction recover without inventing a replacement that only sounds plausible?"**
 
-Instead, the review focuses on significant or potentially recoverable problems.
-
-## Russian breakthrough
-
-Flag regions where Russian narration becomes unusually prominent or clearly intelligible.
-
-## English breakthrough
-
-Flag places where one version unexpectedly preserves substantially more English dialogue than the other.
-
-## Dead or artificial silence
-
-The primary reconstruction may contain near-total silence created by source separation. These regions should be compared with the alternate reconstruction to determine whether it contains legitimate original ambience or useful audio.
-
-Not every quiet region should be filled. The goal is to distinguish intentional silence in the original episode from artificial silence introduced by separation.
-
-## Major audio failure
-
-Flag regions with severe distortion, disappearing dialogue, abrupt audio loss, or strong separation artifacts.
-
-## Interesting differences
-
-Note locations where the two reconstructions behave unexpectedly, such as a different speaker becoming clearer or background sounds surviving in only one version.
-
----
-
-# Repository Structure
-
-The repository contains the scripts and project files developed during the restoration process, including:
-
-```text
-build_review_metadata.py
-build_timeline.py
-choices.json
-compare_runs.py
-extract_segments.py
-process_episode.py
-project.json
-readme.md
-speech_to_text.py
-stitch_episode.py
-JunkyardRestorationStudio/
-```
-
-Large source and generated audio assets are handled separately from the source repository where appropriate.
-
-The repository should be treated as the canonical record of the current project state.
-
----
-
-# Current Completion Status
-
-## Completed
-
-- [x] Source audio extraction
-- [x] Local MossFormer2 source separation
-- [x] Chunk metadata
-- [x] Resume support
-- [x] Multiple chunk-size experiments
-- [x] Complete 20-second run
-- [x] Complete 30-second run
-- [x] Complete 45-second run
-- [x] Complete 60-second run
-- [x] Individual-run stitching
-- [x] Cross-run comparison tools
-- [x] Correlation and disagreement analysis
-- [x] Silence-based segmentation experiments
-- [x] Review metadata generation
-- [x] Review clip extraction
-- [x] Avalonia review application
-- [x] Selection persistence
-- [x] Review notes
-- [x] Keyboard shortcuts
-- [x] Pairwise agreement scoring
-- [x] Human review of all 337 segments
-- [x] Human-curated selection of candidate runs
-- [x] Stitching-plan validation
-- [x] Selected-audio validation
-- [x] Episode-length timeline assembly
-- [x] Primary reconstructed WAV export and validation
-- [x] Complete silence-based reconstruction retained for comparison
-
-## Currently in Progress
-
-- [ ] Episode-length quality review
-- [ ] Comparison of identified problem areas against the silence-based reconstruction
-- [ ] Targeted local replacement in Audacity
-- [ ] Identification of major Russian breakthroughs
-- [ ] Identification of unusually useful English breakthroughs
-- [ ] Evaluation of artificial dead silences
-- [ ] Evaluation of background ambience differences
-- [ ] Review of edited boundaries and transitions
-
-## Still to Do
-
-- [ ] Complete targeted manual restoration
-- [ ] Detailed listening review of the resulting composite track
-- [ ] Identify sections requiring additional source-separation experiments
-- [ ] Targeted reprocessing of difficult sections where justified
-- [ ] Artifact reduction and audio cleanup
-- [ ] Restoration of additional non-dialogue audio where possible
-- [ ] Synchronization with surviving episode video
-- [ ] Final episode audio/video reconstruction
-- [ ] Final quality-control pass
-- [ ] Preservation and packaging of restoration assets
-
----
-
-# Key Lessons So Far
-
-Several major lessons have shaped the project:
-
-1. **No single source-separation result is best everywhere.**
-2. **Chunk length materially affects separation quality.**
-3. **Automated metrics are useful for finding differences but not for making every restoration decision.**
-4. **Human listening remains essential when evaluating difficult source separation.**
-5. **Preserving intermediate results is valuable.** A previously rejected reconstruction may later prove useful for targeted recovery.
-6. **A globally worse result can still contain locally superior information.**
-7. **The current restoration should be treated as an evolving composite rather than a single model output.**
-
-The project has reached a major milestone with the creation of a complete human-curated episode-length reconstruction. However, that file is not the finished restoration. The current targeted comparison stage is intended to recover additional useful audio without discarding or repeating the 337-segment review that has already been completed.
+That distinction will guide the next phase of the restoration.
