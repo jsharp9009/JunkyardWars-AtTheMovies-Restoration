@@ -78,37 +78,28 @@ public partial class SpeechReviewViewModel : ViewModelBase
     [RelayCommand]
     private async Task Play()
     {
-        if (CurrentRegion == null)
-            return;
-
+        if (CurrentRegion == null) return;
         var audio = ResolveExistingPath(AudioPath);
         if (!File.Exists(audio))
         {
             Status = $"Audio file not found: {AudioPath}";
             return;
         }
-
         await audioPlayer.PlaySegmentAsync(audio, CurrentRegion.Start, CurrentRegion.End);
     }
 
     [RelayCommand]
     private async Task PlayContext()
     {
-        if (CurrentRegion == null)
-            return;
-
+        if (CurrentRegion == null) return;
         var audio = ResolveExistingPath(AudioPath);
         if (!File.Exists(audio))
         {
             Status = $"Audio file not found: {AudioPath}";
             return;
         }
-
         const double context = 0.75;
-        await audioPlayer.PlaySegmentAsync(
-            audio,
-            Math.Max(0, CurrentRegion.Start - context),
-            CurrentRegion.End + context);
+        await audioPlayer.PlaySegmentAsync(audio, Math.Max(0, CurrentRegion.Start - context), CurrentRegion.End + context);
     }
 
     [RelayCommand]
@@ -123,9 +114,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
     [RelayCommand]
     private void Jump()
     {
-        if (!int.TryParse(JumpId, out var id))
-            return;
-
+        if (!int.TryParse(JumpId, out var id)) return;
         var item = Regions.FirstOrDefault(x => x.Id == id);
         if (item != null)
         {
@@ -139,6 +128,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
     {
         if (CurrentRegion == null) return;
         CurrentRegion.Start = Math.Max(0, CurrentRegion.Start - 0.10);
+        SaveAll();
     }
 
     [RelayCommand]
@@ -146,6 +136,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
     {
         if (CurrentRegion == null) return;
         CurrentRegion.Start = Math.Min(CurrentRegion.End - 0.01, CurrentRegion.Start + 0.10);
+        SaveAll();
     }
 
     [RelayCommand]
@@ -153,6 +144,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
     {
         if (CurrentRegion == null) return;
         CurrentRegion.End = Math.Max(CurrentRegion.Start + 0.01, CurrentRegion.End - 0.10);
+        SaveAll();
     }
 
     [RelayCommand]
@@ -160,6 +152,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
     {
         if (CurrentRegion == null) return;
         CurrentRegion.End += 0.10;
+        SaveAll();
     }
 
     [RelayCommand]
@@ -172,16 +165,12 @@ public partial class SpeechReviewViewModel : ViewModelBase
     public void SaveAll()
     {
         SaveCurrent();
-        repository.SaveDecisions(
-            ResolveWritablePath(DecisionsPath, MapPath),
-            Regions.Select(x => x.ToDecision()));
+        repository.SaveDecisions(ResolveWritablePath(DecisionsPath, MapPath), Regions.Select(x => x.ToDecision()));
     }
 
     private void Move(int direction)
     {
-        if (Regions.Count == 0)
-            return;
-
+        if (Regions.Count == 0) return;
         SaveAll();
         var index = CurrentRegion == null ? 0 : Regions.IndexOf(CurrentRegion);
         index = Math.Clamp(index + direction, 0, Regions.Count - 1);
@@ -204,22 +193,16 @@ public partial class SpeechReviewViewModel : ViewModelBase
 
     private static string ResolveExistingPath(string path)
     {
-        if (Path.IsPathRooted(path) || File.Exists(path))
-            return path;
-
+        if (Path.IsPathRooted(path) || File.Exists(path)) return path;
         var parent = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", path));
         return File.Exists(parent) ? parent : path;
     }
 
     private static string ResolveWritablePath(string path, string mapPath)
     {
-        if (Path.IsPathRooted(path) || File.Exists(path))
-            return path;
-
+        if (Path.IsPathRooted(path) || File.Exists(path)) return path;
         var mapDirectory = Path.GetDirectoryName(Path.GetFullPath(mapPath));
-        if (!string.IsNullOrWhiteSpace(mapDirectory))
-            return Path.Combine(mapDirectory, Path.GetFileName(path));
-
+        if (!string.IsNullOrWhiteSpace(mapDirectory)) return Path.Combine(mapDirectory, Path.GetFileName(path));
         return path;
     }
 }
@@ -229,30 +212,21 @@ public partial class SpeechReviewItem : ObservableObject
     public int Id { get; }
     public string Text { get; }
     public int[] SubtitleIds { get; }
-    public string SubtitleIdsDisplay => string.Join(", ", SubtitleIds);
+    public string SubtitleIdsDisplay => SubtitleIds.Length == 0 ? "None" : string.Join(", ", SubtitleIds);
     public string BoundaryStartSource { get; }
     public string BoundaryEndSource { get; }
     public double OriginalStart { get; }
     public double OriginalEnd { get; }
 
-    [ObservableProperty]
-    private double start;
+    [ObservableProperty] private double start;
+    [ObservableProperty] private double end;
+    [ObservableProperty] private string quality = "";
+    [ObservableProperty] private string speaker = "";
+    [ObservableProperty] private string knownSpeakerName = "";
+    [ObservableProperty] private string speakerConfidence = "";
+    [ObservableProperty] private string notes = "";
 
-    [ObservableProperty]
-    private double end;
-
-    [ObservableProperty]
-    private string quality = "";
-
-    [ObservableProperty]
-    private string speaker = "";
-
-    [ObservableProperty]
-    private string speakerConfidence = "";
-
-    [ObservableProperty]
-    private string notes = "";
-
+    public bool IsKnownSpeaker => string.Equals(Speaker, "Known", StringComparison.OrdinalIgnoreCase);
     public string PositionDisplay => $"{FormatTime(Start)} – {FormatTime(End)}";
     public string DurationDisplay => $"{Math.Max(0, End - Start):0.00}s";
     public string BoundaryDisplay => $"Start: {BoundaryStartSource}    End: {BoundaryEndSource}";
@@ -261,7 +235,7 @@ public partial class SpeechReviewItem : ObservableObject
     {
         Id = region.Id;
         Text = region.Text;
-        SubtitleIds = region.SubtitleIds;
+        SubtitleIds = region.SubtitleIds ?? [];
         BoundaryStartSource = region.BoundaryStartSource;
         BoundaryEndSource = region.BoundaryEndSource;
         OriginalStart = region.Start;
@@ -271,6 +245,7 @@ public partial class SpeechReviewItem : ObservableObject
         End = decision?.End ?? region.End;
         Quality = decision?.Quality ?? region.Quality;
         Speaker = decision?.Speaker ?? region.Speaker;
+        KnownSpeakerName = decision?.KnownSpeakerName ?? "";
         SpeakerConfidence = decision?.SpeakerConfidence ?? region.SpeakerConfidence;
         Notes = decision?.Notes ?? region.Notes;
     }
@@ -281,6 +256,8 @@ public partial class SpeechReviewItem : ObservableObject
         OnPropertyChanged(nameof(PositionDisplay));
         OnPropertyChanged(nameof(DurationDisplay));
     }
+
+    partial void OnSpeakerChanged(string value) => OnPropertyChanged(nameof(IsKnownSpeaker));
 
     public void Normalize()
     {
@@ -297,6 +274,7 @@ public partial class SpeechReviewItem : ObservableObject
         End = End,
         Quality = Quality,
         Speaker = Speaker,
+        KnownSpeakerName = KnownSpeakerName,
         SpeakerConfidence = SpeakerConfidence,
         Notes = Notes
     };
@@ -304,8 +282,6 @@ public partial class SpeechReviewItem : ObservableObject
     private static string FormatTime(double seconds)
     {
         var span = TimeSpan.FromSeconds(Math.Max(0, seconds));
-        return span.TotalHours >= 1
-            ? span.ToString(@"h\:mm\:ss\.ff")
-            : span.ToString(@"m\:ss\.ff");
+        return span.TotalHours >= 1 ? span.ToString(@"h\:mm\:ss\.ff") : span.ToString(@"m\:ss\.ff");
     }
 }
