@@ -37,6 +37,7 @@ public class SpeechReviewDecision
     public double End { get; set; }
     public string Quality { get; set; } = "";
     public string Speaker { get; set; } = "";
+    public string KnownSpeakerName { get; set; } = "";
     public string SpeakerConfidence { get; set; } = "";
     public string Notes { get; set; } = "";
 }
