@@ -12,18 +12,12 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private void OpenSpeechReview_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        var window = new SpeechReviewWindow
-        {
-            DataContext = new SpeechReviewViewModel()
-        };
-
-        window.Show(this);
-    }
-
     private async void Window_KeyDown(object? sender, KeyEventArgs e)
     {
+        // The speech review tab has its own keyboard handling.
+        if (MainTabs.SelectedIndex != 0)
+            return;
+
         // Ignore shortcuts while typing in a TextBox
         if (FocusManager.GetFocusedElement() is TextBox)
             return;
