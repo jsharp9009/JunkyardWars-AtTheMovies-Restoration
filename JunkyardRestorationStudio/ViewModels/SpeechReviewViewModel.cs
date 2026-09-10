@@ -129,7 +129,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
         var item = Regions.FirstOrDefault(x => x.Id == id);
         if (item != null)
         {
-            SaveCurrent();
+            SaveAll();
             CurrentRegion = item;
         }
     }
@@ -182,7 +182,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
         if (Regions.Count == 0)
             return;
 
-        SaveCurrent();
+        SaveAll();
         var index = CurrentRegion == null ? 0 : Regions.IndexOf(CurrentRegion);
         index = Math.Clamp(index + direction, 0, Regions.Count - 1);
         CurrentRegion = Regions[index];
@@ -229,6 +229,7 @@ public partial class SpeechReviewItem : ObservableObject
     public int Id { get; }
     public string Text { get; }
     public int[] SubtitleIds { get; }
+    public string SubtitleIdsDisplay => string.Join(", ", SubtitleIds);
     public string BoundaryStartSource { get; }
     public string BoundaryEndSource { get; }
     public double OriginalStart { get; }
