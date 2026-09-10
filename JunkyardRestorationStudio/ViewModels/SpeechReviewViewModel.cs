@@ -51,6 +51,9 @@ public partial class SpeechReviewViewModel : ViewModelBase
     {
         try
         {
+            MapPath = ResolveExistingPath(MapPath);
+            DecisionsPath = ResolveWritablePath(DecisionsPath, MapPath);
+
             var regions = repository.LoadMap(MapPath);
             decisions = repository.LoadDecisions(DecisionsPath);
 
@@ -78,10 +81,14 @@ public partial class SpeechReviewViewModel : ViewModelBase
         if (CurrentRegion == null)
             return;
 
-        await audioPlayer.PlaySegmentAsync(
-            AudioPath,
-            CurrentRegion.Start,
-            CurrentRegion.End);
+        var audio = ResolveExistingPath(AudioPath);
+        if (!File.Exists(audio))
+        {
+            Status = $"Audio file not found: {AudioPath}";
+            return;
+        }
+
+        await audioPlayer.PlaySegmentAsync(audio, CurrentRegion.Start, CurrentRegion.End);
     }
 
     [RelayCommand]
@@ -90,30 +97,28 @@ public partial class SpeechReviewViewModel : ViewModelBase
         if (CurrentRegion == null)
             return;
 
+        var audio = ResolveExistingPath(AudioPath);
+        if (!File.Exists(audio))
+        {
+            Status = $"Audio file not found: {AudioPath}";
+            return;
+        }
+
         const double context = 0.75;
         await audioPlayer.PlaySegmentAsync(
-            AudioPath,
+            audio,
             Math.Max(0, CurrentRegion.Start - context),
             CurrentRegion.End + context);
     }
 
     [RelayCommand]
-    private void Stop()
-    {
-        audioPlayer.Stop();
-    }
+    private void Stop() => audioPlayer.Stop();
 
     [RelayCommand]
-    private void Previous()
-    {
-        Move(-1);
-    }
+    private void Previous() => Move(-1);
 
     [RelayCommand]
-    private void Next()
-    {
-        Move(1);
-    }
+    private void Next() => Move(1);
 
     [RelayCommand]
     private void Jump()
@@ -160,7 +165,6 @@ public partial class SpeechReviewViewModel : ViewModelBase
     [RelayCommand]
     private void Save()
     {
-        SaveCurrent();
         SaveAll();
         Status = $"Saved {Regions.Count} speech decisions.";
     }
@@ -168,9 +172,8 @@ public partial class SpeechReviewViewModel : ViewModelBase
     public void SaveAll()
     {
         SaveCurrent();
-
         repository.SaveDecisions(
-            DecisionsPath,
+            ResolveWritablePath(DecisionsPath, MapPath),
             Regions.Select(x => x.ToDecision()));
     }
 
@@ -185,10 +188,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
         CurrentRegion = Regions[index];
     }
 
-    private void SaveCurrent()
-    {
-        CurrentRegion?.Normalize();
-    }
+    private void SaveCurrent() => CurrentRegion?.Normalize();
 
     public async Task HandleShortcut(string key)
     {
@@ -200,6 +200,27 @@ public partial class SpeechReviewViewModel : ViewModelBase
             case "Right": Next(); break;
             case "Space": await Play(); break;
         }
+    }
+
+    private static string ResolveExistingPath(string path)
+    {
+        if (Path.IsPathRooted(path) || File.Exists(path))
+            return path;
+
+        var parent = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", path));
+        return File.Exists(parent) ? parent : path;
+    }
+
+    private static string ResolveWritablePath(string path, string mapPath)
+    {
+        if (Path.IsPathRooted(path) || File.Exists(path))
+            return path;
+
+        var mapDirectory = Path.GetDirectoryName(Path.GetFullPath(mapPath));
+        if (!string.IsNullOrWhiteSpace(mapDirectory))
+            return Path.Combine(mapDirectory, Path.GetFileName(path));
+
+        return path;
     }
 }
 
