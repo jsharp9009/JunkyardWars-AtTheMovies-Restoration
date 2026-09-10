@@ -12,6 +12,16 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
+    private void OpenSpeechReview_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var window = new SpeechReviewWindow
+        {
+            DataContext = new SpeechReviewViewModel()
+        };
+
+        window.Show(this);
+    }
+
     private async void Window_KeyDown(object? sender, KeyEventArgs e)
     {
         // Ignore shortcuts while typing in a TextBox
