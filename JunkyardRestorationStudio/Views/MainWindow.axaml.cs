@@ -14,24 +14,6 @@ public partial class MainWindow : Window
 
     private async void Window_KeyDown(object? sender, KeyEventArgs e)
     {
-        // The speech review tab has its own keyboard handling.
-        if (MainTabs.SelectedIndex != 0)
-            return;
-
-        // Ignore shortcuts while typing in a TextBox
-        if (FocusManager.GetFocusedElement() is TextBox)
-            return;
-
-        if (DataContext is not MainViewModel vm)
-            return;
-
-        var command = KeyboardMapper.Map(e);
-
-        if (command == Models.KeyboardCommand.None)
-            return;
-
-        e.Handled = true;
-
-        await vm.HandleShortcut(command);
+       
     }
 }

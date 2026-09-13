@@ -15,12 +15,9 @@ public partial class SpeechReviewViewModel : ViewModelBase
 {
     private readonly IAudioPlayer audioPlayer = new AudioPlayer();
     private readonly SpeechReviewRepository repository = new();
-    private Dictionary<int, SpeechReviewDecision> decisions = new();
-
-    public ObservableCollection<SpeechReviewItem> Regions { get; } = new();
 
     [ObservableProperty]
-    private SpeechReviewItem? currentRegion;
+    private ReviewProject project;
 
     [ObservableProperty]
     private string mapPath = "speech_review_map.json";
@@ -29,7 +26,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
     private string decisionsPath = "speech_review_decisions.json";
 
     [ObservableProperty]
-    private string audioPath = "restored_audio.wav";
+    private string audioPath = "restored_combine_preview.wav";
 
     [ObservableProperty]
     private string status = "Not loaded.";
@@ -37,11 +34,14 @@ public partial class SpeechReviewViewModel : ViewModelBase
     [ObservableProperty]
     private string jumpId = "";
 
+
     public string[] QualityOptions { get; } = ["", "Good", "Muffled", "Partial", "Missing"];
     public string[] SpeakerOptions { get; } = ["", "Known", "Multiple", "Unknown"];
     public string[] SpeakerConfidenceOptions { get; } = ["", "High", "Medium", "Low"];
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public SpeechReviewViewModel()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
         Load();
     }
@@ -53,45 +53,45 @@ public partial class SpeechReviewViewModel : ViewModelBase
         {
             MapPath = ResolveExistingPath(MapPath);
             DecisionsPath = ResolveWritablePath(DecisionsPath, MapPath);
+            AudioPath = ResolveExistingPath(AudioPath);
 
             var regions = repository.LoadMap(MapPath);
-            decisions = repository.LoadDecisions(DecisionsPath);
+            var decisions = repository.LoadDecisions(DecisionsPath);
 
-            Regions.Clear();
+            var Regions = new List<SpeechReviewItem>();
             foreach (var region in regions.OrderBy(x => x.Id))
             {
                 decisions.TryGetValue(region.Id, out var decision);
                 Regions.Add(new SpeechReviewItem(region, decision));
             }
 
-            CurrentRegion = Regions.FirstOrDefault();
+            Project = new ReviewProject(Regions,decisions);
             Status = $"Loaded {Regions.Count} speech regions.";
         }
         catch (Exception ex)
         {
             Status = ex.Message;
-            Regions.Clear();
-            CurrentRegion = null;
+            Project = new ReviewProject(new List<SpeechReviewItem>(), new Dictionary<int, SpeechReviewDecision>());
         }
     }
 
     [RelayCommand]
     private async Task Play()
     {
-        if (CurrentRegion == null) return;
+        if (Project.CurrentRegion == null) return;
         var audio = ResolveExistingPath(AudioPath);
         if (!File.Exists(audio))
         {
             Status = $"Audio file not found: {AudioPath}";
             return;
         }
-        await audioPlayer.PlaySegmentAsync(audio, CurrentRegion.Start, CurrentRegion.End);
+        await audioPlayer.PlaySegmentAsync(audio, Project.CurrentRegion.Start, Project.CurrentRegion.End);
     }
 
     [RelayCommand]
     private async Task PlayContext()
     {
-        if (CurrentRegion == null) return;
+        if (Project.CurrentRegion == null) return;
         var audio = ResolveExistingPath(AudioPath);
         if (!File.Exists(audio))
         {
@@ -99,7 +99,7 @@ public partial class SpeechReviewViewModel : ViewModelBase
             return;
         }
         const double context = 0.75;
-        await audioPlayer.PlaySegmentAsync(audio, Math.Max(0, CurrentRegion.Start - context), CurrentRegion.End + context);
+        await audioPlayer.PlaySegmentAsync(audio, Math.Max(0, Project.CurrentRegion.Start - context), Project.CurrentRegion.End + context);
     }
 
     [RelayCommand]
@@ -115,43 +115,38 @@ public partial class SpeechReviewViewModel : ViewModelBase
     private void Jump()
     {
         if (!int.TryParse(JumpId, out var id)) return;
-        var item = Regions.FirstOrDefault(x => x.Id == id);
-        if (item != null)
-        {
-            SaveAll();
-            CurrentRegion = item;
-        }
+        Project.JumpTo(id);
     }
 
     [RelayCommand]
     private void NudgeStartEarlier()
     {
-        if (CurrentRegion == null) return;
-        CurrentRegion.Start = Math.Max(0, CurrentRegion.Start - 0.10);
+        if (Project.CurrentRegion == null) return;
+        Project.CurrentRegion.Start = Math.Max(0, Project.CurrentRegion.Start - 0.10);
         SaveAll();
     }
 
     [RelayCommand]
     private void NudgeStartLater()
     {
-        if (CurrentRegion == null) return;
-        CurrentRegion.Start = Math.Min(CurrentRegion.End - 0.01, CurrentRegion.Start + 0.10);
+        if (Project.CurrentRegion == null) return;
+        Project.CurrentRegion.Start = Math.Min(Project.CurrentRegion.End - 0.01, Project.CurrentRegion.Start + 0.10);
         SaveAll();
     }
 
     [RelayCommand]
     private void NudgeEndEarlier()
     {
-        if (CurrentRegion == null) return;
-        CurrentRegion.End = Math.Max(CurrentRegion.Start + 0.01, CurrentRegion.End - 0.10);
+        if (Project.CurrentRegion == null) return;
+        Project.CurrentRegion.End = Math.Max(Project.CurrentRegion.Start + 0.01, Project.CurrentRegion.End - 0.10);
         SaveAll();
     }
 
     [RelayCommand]
     private void NudgeEndLater()
     {
-        if (CurrentRegion == null) return;
-        CurrentRegion.End += 0.10;
+        if (Project.CurrentRegion == null) return;
+        Project.CurrentRegion.End += 0.10;
         SaveAll();
     }
 
@@ -159,25 +154,25 @@ public partial class SpeechReviewViewModel : ViewModelBase
     private void Save()
     {
         SaveAll();
-        Status = $"Saved {Regions.Count} speech decisions.";
+        Status = $"Saved {Project.Regions.Count} speech decisions.";
     }
 
     public void SaveAll()
     {
         SaveCurrent();
-        repository.SaveDecisions(ResolveWritablePath(DecisionsPath, MapPath), Regions.Select(x => x.ToDecision()));
+        repository.SaveDecisions(ResolveWritablePath(DecisionsPath, MapPath), Project.Regions.Select(x => x.ToDecision()));
     }
 
     private void Move(int direction)
     {
-        if (Regions.Count == 0) return;
-        SaveAll();
-        var index = CurrentRegion == null ? 0 : Regions.IndexOf(CurrentRegion);
-        index = Math.Clamp(index + direction, 0, Regions.Count - 1);
-        CurrentRegion = Regions[index];
+        switch (direction)
+        {
+            case -1: Project.Previous(); break;
+            case 1: Project.Next(); break;
+        }
     }
 
-    private void SaveCurrent() => CurrentRegion?.Normalize();
+    private void SaveCurrent() => Project.CurrentRegion?.Normalize();
 
     public async Task HandleShortcut(string key)
     {
