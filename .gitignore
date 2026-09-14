@@ -485,4 +485,7 @@ $RECYCLE.BIN/
 *.wav
 /checkpoints/
 /review/
-english_translated.srt
+*.srt
+audio.json
+audio.srt
+audio_translated.srt
