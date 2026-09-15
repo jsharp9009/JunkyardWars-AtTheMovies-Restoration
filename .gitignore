@@ -493,3 +493,5 @@ SubtitleRuns/audio_large.json
 SubtitleRuns/audio_mediumn.json
 SubtitleRuns/audio_russian.json
 SubtitleRuns/audio_turbo.json
+SubtitleRuns/audio_large_no_translate.json
+audio_en.json
