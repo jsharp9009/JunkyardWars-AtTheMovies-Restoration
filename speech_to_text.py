@@ -4,7 +4,7 @@ from whisper.utils import get_writer
 audio_path = "C:/Users/jshar/Desktop/From Youtube/audio.wav"
 
 print("Loading Model")
-model = whisper.load_model("turbo")
+model = whisper.load_model("large")
 print("Transcribing");
 
 result = model.transcribe(
@@ -14,7 +14,7 @@ result = model.transcribe(
     word_timestamps=True,
     condition_on_previous_text=False,
     initial_prompt=(
-        "Это телепередача Junkyard Wars об автомобилях, "
+        "Это телепередача Junkyard Mega Wars - At the Movies об автомобилях, "
         "механике, двигателях, машинах и инженерных соревнованиях. "
         "Используются технические термины и названия деталей автомобилей."
     ),
@@ -28,7 +28,7 @@ print("Writing SRT")
 srt_writer = get_writer("srt", output_directory)
 srt_writer(result, audio_path)
 print("Writing JSON");
-# 4. Export to VTT format
+# 4. Export to JSON format
 json_writer = get_writer("json", output_directory)
 json_writer(result, audio_path)
 
