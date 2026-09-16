@@ -1,7 +1,7 @@
 import whisper
 from whisper.utils import get_writer
 
-audio_path = "C:/Users/jshar/Desktop/From Youtube/audio.wav"
+audio_path = "C:/Junkyard Restoration/output/speaker1_full.wav"
 
 print("Loading Model")
 model = whisper.load_model("large")

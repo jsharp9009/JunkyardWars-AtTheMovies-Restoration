@@ -159,8 +159,8 @@ def main() -> None:
         batch_size=args.batch_size,
         language="ru",
         task="transcribe",
-        initial_prompt=INITIAL_PROMPT,
-        condition_on_previous_text=False,
+        #initial_prompt=INITIAL_PROMPT,
+        #condition_on_previous_text=False,
     )
 
     # The model saw a sliced audio buffer. Put segment timestamps back into

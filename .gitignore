@@ -495,3 +495,6 @@ SubtitleRuns/audio_russian.json
 SubtitleRuns/audio_turbo.json
 SubtitleRuns/audio_large_no_translate.json
 audio_en.json
+speaker1_full.json
+whisperx_en.json
+whisperx_russian.json
