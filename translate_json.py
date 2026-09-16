@@ -2,7 +2,7 @@
 """
 Build English translation evidence from Russian Whisper JSON.
 
-The Russian Whisper transcription remains untouched.  For each segment this
+The Russian Whisper transcription remains untouched. For each segment this
 script produces multiple English candidates so later restoration work can
 compare translation evidence instead of trusting one translation blindly.
 
@@ -18,11 +18,12 @@ so existing downstream tools continue to work, but the new
 ``translation_candidates`` object is the important artifact for review.
 
 This is intentionally an evidence-generation step, not an automatic final
-translation decision.  Later we can compare these candidates with the
+translation decision. Later we can compare these candidates with the
 surviving English audio transcription and lip-reading transcription.
 """
 
 import argparse
+import gc
 import json
 import os
 import re
@@ -110,17 +111,9 @@ def glossary_hits(text, glossary):
     return hits
 
 
-def normalize_translation(text, glossary):
-    """
-    Apply conservative output normalization for exact known names/phrases.
-
-    We deliberately do NOT replace Russian source text with English before
-    translation.  Mixing English into the Russian input can make a machine
-    translation less reliable.  Instead, normalization only changes common
-    translated variants when the exact Russian glossary phrase was present.
-    """
-    result = re.sub(r"\s+", " ", str(text)).strip()
-    return result
+def normalize_translation(text):
+    """Conservative cleanup; do not rewrite model meaning automatically."""
+    return re.sub(r"\s+", " ", str(text)).strip()
 
 
 def load_model(name, device_name):
@@ -148,6 +141,14 @@ def load_model(name, device_name):
 
     model.eval()
     return tokenizer, model, device
+
+
+def unload_model(tokenizer, model):
+    del tokenizer
+    del model
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
 
 def translate_batch(texts, tokenizer, model, device):
@@ -201,35 +202,27 @@ def translate_context_group(texts, tokenizer, model, device):
     return results
 
 
-def translate_with_context(indices, segments, tokenizer, model, device, radius):
-    """Translate selected segment indices using nearby Russian context."""
-    if not indices:
-        return {}
+def translate_with_context(index, segments, tokenizer, model, device, radius):
+    """Translate one segment while supplying nearby Russian dialogue."""
+    group_start = max(0, index - radius)
+    group_end = min(len(segments), index + radius + 1)
+    group_indices = list(range(group_start, group_end))
+    texts = [str(segments[i].get("text", "")).strip() for i in group_indices]
 
-    results = {}
-    min_index = min(indices)
-    max_index = max(indices)
+    if not all(texts):
+        direct = translate_batch(
+            [str(segments[index].get("text", "")).strip()], tokenizer, model, device
+        )
+        return direct[0].strip() if direct else ""
 
-    for center in indices:
-        group_start = max(0, center - radius)
-        group_end = min(len(segments), center + radius + 1)
-        group_indices = list(range(group_start, group_end))
-        texts = [str(segments[i].get("text", "")).strip() for i in group_indices]
+    translated = translate_context_group(texts, tokenizer, model, device)
+    if translated is None:
+        direct = translate_batch(
+            [str(segments[index].get("text", "")).strip()], tokenizer, model, device
+        )
+        return direct[0].strip() if direct else ""
 
-        if not all(texts):
-            direct = translate_batch([str(segments[center].get("text", "")).strip()], tokenizer, model, device)
-            results[center] = direct[0].strip() if direct else ""
-            continue
-
-        translated = translate_context_group(texts, tokenizer, model, device)
-        if translated is None:
-            direct = translate_batch([str(segments[center].get("text", "")).strip()], tokenizer, model, device)
-            results[center] = direct[0].strip() if direct else ""
-        else:
-            local_index = group_indices.index(center)
-            results[center] = translated[local_index]
-
-    return results
+    return translated[group_indices.index(index)]
 
 
 def ensure_candidate_object(segment):
@@ -245,6 +238,122 @@ def candidate_ready(segment, name):
     return isinstance(candidates, dict) and bool(str(candidates.get(name, "")).strip())
 
 
+def pending_indices(segments, start, stop, candidate_name, force):
+    result = []
+    for i in range(start, stop):
+        text = str(segments[i].get("text", "")).strip()
+        if not text:
+            continue
+        if force or not candidate_ready(segments[i], candidate_name):
+            result.append(i)
+    return result
+
+
+def translate_primary(data, start, stop, args, glossary):
+    segments = data["segments"]
+    pending = pending_indices(
+        segments, start, stop, "nllb_context", args.force
+    )
+    print(f"Primary candidates needed: {len(pending)}")
+    if not pending:
+        return
+
+    tokenizer, model, device = load_model(args.model, args.device)
+    translated_since_save = 0
+
+    for position, index in enumerate(pending, start=1):
+        segment = segments[index]
+        source_text = str(segment.get("text", "")).strip()
+        candidates = ensure_candidate_object(segment)
+        segment["translation_glossary_hits"] = glossary_hits(source_text, glossary)
+
+        candidates["nllb_context"] = normalize_translation(
+            translate_with_context(
+                index,
+                segments,
+                tokenizer,
+                model,
+                device,
+                max(0, args.context_window),
+            )
+        )
+
+        direct = translate_batch([source_text], tokenizer, model, device)
+        candidates["nllb_direct"] = normalize_translation(
+            direct[0] if direct else ""
+        )
+
+        # Preserve compatibility with the earlier script. This is merely the
+        # primary candidate, not a human-reviewed final translation.
+        segment["translation"] = candidates["nllb_context"]
+        segment["translation_review"] = segment.get(
+            "translation_review",
+            {"status": "unreviewed", "selected": "", "confidence": "", "notes": ""},
+        )
+
+        translated_since_save += 1
+        print(f"Primary: {position}/{len(pending)} (segment {index})")
+
+        if translated_since_save >= args.save_every:
+            atomic_save_json(data, Path(args.output))
+            print(f"Progress saved: {args.output}")
+            translated_since_save = 0
+
+    atomic_save_json(data, Path(args.output))
+    unload_model(tokenizer, model)
+
+
+def translate_secondary(data, start, stop, args):
+    if args.secondary_model.lower() == "none":
+        print("Secondary model disabled.")
+        return
+
+    segments = data["segments"]
+    pending = pending_indices(
+        segments, start, stop, "secondary_context", args.force
+    )
+    print(f"Secondary candidates needed: {len(pending)}")
+    if not pending:
+        return
+
+    # The secondary model is loaded only after the primary model is unloaded.
+    # This avoids holding both NLLB models in GPU memory at the same time.
+    tokenizer, model, device = load_model(args.secondary_model, args.device)
+    translated_since_save = 0
+
+    for position, index in enumerate(pending, start=1):
+        segment = segments[index]
+        source_text = str(segment.get("text", "")).strip()
+        candidates = ensure_candidate_object(segment)
+
+        candidates["secondary_context"] = normalize_translation(
+            translate_with_context(
+                index,
+                segments,
+                tokenizer,
+                model,
+                device,
+                max(0, args.context_window),
+            )
+        )
+
+        direct = translate_batch([source_text], tokenizer, model, device)
+        candidates["secondary_direct"] = normalize_translation(
+            direct[0] if direct else ""
+        )
+
+        translated_since_save += 1
+        print(f"Secondary: {position}/{len(pending)} (segment {index})")
+
+        if translated_since_save >= args.save_every:
+            atomic_save_json(data, Path(args.output))
+            print(f"Progress saved: {args.output}")
+            translated_since_save = 0
+
+    atomic_save_json(data, Path(args.output))
+    unload_model(tokenizer, model)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Build contextual Russian-to-English translation evidence from Whisper JSON."
@@ -254,7 +363,7 @@ def main():
     parser.add_argument(
         "--srt-output",
         default=None,
-        help="Primary English SRT output. Defaults to <output stem>_en.srt.",
+        help="English SRT output. Defaults to <output stem>_en.srt.",
     )
     parser.add_argument("--model", default=DEFAULT_MODEL, help="Primary translation model.")
     parser.add_argument(
@@ -276,7 +385,7 @@ def main():
         "--context-window",
         type=int,
         default=2,
-        help="Number of neighboring Russian segments on each side for contextual translation (default: 2).",
+        help="Number of neighboring Russian segments on each side for context (default: 2).",
     )
     parser.add_argument(
         "--force",
@@ -320,106 +429,10 @@ def main():
     print(f"Segments: {total}")
     print(f"Requested range: {start}..{stop - 1}")
 
-    primary_tokenizer, primary_model, device = load_model(args.model, args.device)
-
-    secondary_tokenizer = None
-    secondary_model = None
-    if args.secondary_model.lower() != "none":
-        secondary_tokenizer, secondary_model, _ = load_model(
-            args.secondary_model, args.device
-        )
-
-    pending = []
-    for i in range(start, stop):
-        text = str(segments[i].get("text", "")).strip()
-        if not text:
-            continue
-
-        needed = args.force or not candidate_ready(segments[i], "nllb_context")
-        if needed:
-            pending.append(i)
-
-    print(f"Segments needing translation evidence: {len(pending)}")
-
-    translated_since_save = 0
-
-    # Process one segment at a time at the evidence level.  Each segment is
-    # translated with context, directly, and (optionally) by the secondary
-    # model. This is slower than one giant batch but produces much more useful
-    # review data and remains safely resumable.
-    for position, index in enumerate(pending, start=1):
-        segment = segments[index]
-        source_text = str(segment.get("text", "")).strip()
-        candidates = ensure_candidate_object(segment)
-
-        hits = glossary_hits(source_text, glossary)
-        segment["translation_glossary_hits"] = hits
-
-        # Context candidate: use neighboring Russian dialogue but store only
-        # the translation belonging to this segment.
-        context_result = translate_with_context(
-            [index],
-            segments,
-            primary_tokenizer,
-            primary_model,
-            device,
-            max(0, args.context_window),
-        )
-        candidates["nllb_context"] = normalize_translation(
-            context_result.get(index, ""), glossary
-        )
-
-        # Direct candidate: no surrounding text, useful for detecting cases
-        # where context changes the interpretation too aggressively.
-        direct = translate_batch(
-            [source_text], primary_tokenizer, primary_model, device
-        )
-        candidates["nllb_direct"] = normalize_translation(
-            direct[0] if direct else "", glossary
-        )
-
-        # Optional independent model provides a second machine-translation
-        # opinion. The models are different sizes, so disagreement is useful
-        # evidence rather than an attempt to declare one automatically correct.
-        if secondary_model is not None:
-            secondary_context = translate_with_context(
-                [index],
-                segments,
-                secondary_tokenizer,
-                secondary_model,
-                device,
-                max(0, args.context_window),
-            )
-            candidates["secondary_context"] = normalize_translation(
-                secondary_context.get(index, ""), glossary
-            )
-
-            secondary_direct = translate_batch(
-                [source_text], secondary_tokenizer, secondary_model, device
-            )
-            candidates["secondary_direct"] = normalize_translation(
-                secondary_direct[0] if secondary_direct else "", glossary
-            )
-
-        # Keep the old field for compatibility. This is NOT the final reviewed
-        # answer; it is simply the primary contextual candidate.
-        segment["translation"] = candidates.get("nllb_context", "")
-        segment["translation_review"] = {
-            "status": "unreviewed",
-            "selected": "",
-            "confidence": "",
-            "notes": "",
-        }
-
-        translated_since_save += 1
-
-        if position % 1 == 0:
-            print(f"Processed {position}/{len(pending)} (segment {index})")
-
-        if translated_since_save >= args.save_every:
-            atomic_save_json(data, output_path)
-            print(f"Progress saved: {output_path}")
-            translated_since_save = 0
+    # Run models sequentially so the two checkpoints do not simultaneously
+    # consume GPU memory. This is especially important for the 1.3B model.
+    translate_primary(data, start, stop, args, glossary)
+    translate_secondary(data, start, stop, args)
 
     atomic_save_json(data, output_path)
 
@@ -433,7 +446,7 @@ def main():
     print("Done.")
     print(f"JSON: {output_path}")
     print(f"SRT:  {srt_path}")
-    print("The JSON now contains multiple translation candidates for review.")
+    print("The JSON contains multiple translation candidates for later evidence review.")
 
 
 if __name__ == "__main__":
