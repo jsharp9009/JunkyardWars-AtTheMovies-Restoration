@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 """
-Translate Russian Whisper JSON to English with NLLB.
+Build English translation evidence from Russian Whisper JSON.
 
-The original Russian JSON and all Whisper word timestamps are preserved.
-Each segment gets an English ``translation`` field and an English SRT can
-be generated from the original segment timings.
+The Russian Whisper transcription remains untouched.  For each segment this
+script produces multiple English candidates so later restoration work can
+compare translation evidence instead of trusting one translation blindly.
 
-This script has two improvements for this episode:
+Candidates:
+  * nllb_context - primary NLLB model translated with nearby Russian context
+  * nllb_direct  - primary NLLB model translated without context
+  * secondary_context - optional second NLLB model with nearby context
+  * secondary_direct  - optional second NLLB model without context
 
-1. A project glossary can force known Russian terms/proper names to their
-   desired English forms.
-2. Optional context mode translates small groups of neighboring segments
-   together.  This gives NLLB more surrounding dialogue when the current
-   segment is ambiguous.  The original per-segment timings are still kept.
+The original segment timings and Whisper word timestamps are preserved.
+The legacy ``translation`` field is kept as the primary contextual candidate
+so existing downstream tools continue to work, but the new
+``translation_candidates`` object is the important artifact for review.
 
-NLLB is a general machine-translation model, not a document/context-aware
-translation model, so context mode is deliberately conservative. If the
-model does not preserve the segment markers, the script falls back to
-individual segment translation for that group.
+This is intentionally an evidence-generation step, not an automatic final
+translation decision.  Later we can compare these candidates with the
+surviving English audio transcription and lip-reading transcription.
 """
 
 import argparse
@@ -30,11 +32,10 @@ import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 DEFAULT_MODEL = "facebook/nllb-200-distilled-600M"
+DEFAULT_SECONDARY_MODEL = "facebook/nllb-200-distilled-1.3B"
 SRC_LANG = "rus_Cyrl"
 TGT_LANG = "eng_Latn"
 
-# These are deliberately small, high-confidence defaults. More terms can be
-# supplied with --glossary without changing the script.
 DEFAULT_GLOSSARY = {
     "Супервойны на свалке": "Junkyard Mega Wars",
     "Супер-войны на свалке": "Junkyard Mega Wars",
@@ -64,11 +65,11 @@ def srt_timestamp(seconds):
     return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
 
 
-def write_srt(data, path: Path):
+def write_srt(data, path: Path, field="translation"):
     lines = []
     number = 1
     for seg in data.get("segments", []):
-        text = str(seg.get("translation", "")).strip()
+        text = str(seg.get(field, "")).strip()
         if not text:
             continue
         lines += [
@@ -96,22 +97,29 @@ def load_glossary(path):
     if not isinstance(user_glossary, dict):
         raise ValueError("Glossary JSON must be an object of Russian -> English mappings.")
 
-    # User entries override defaults.
     glossary.update({str(k): str(v) for k, v in user_glossary.items()})
     return glossary
 
 
-def apply_glossary_to_source(text, glossary):
-    """
-    Replace known source phrases with their desired English terminology before
-    translation. This is intentionally limited to exact phrases so ordinary
-    uses of individual Russian words are not globally rewritten.
-    """
-    result = text
-    # Longest phrases first prevents a short phrase from consuming part of a
-    # longer known title/name.
+def glossary_hits(text, glossary):
+    """Return glossary entries present in a Russian source segment."""
+    hits = []
     for source, target in sorted(glossary.items(), key=lambda item: len(item[0]), reverse=True):
-        result = result.replace(source, target)
+        if source.lower() in text.lower():
+            hits.append({"russian": source, "english": target})
+    return hits
+
+
+def normalize_translation(text, glossary):
+    """
+    Apply conservative output normalization for exact known names/phrases.
+
+    We deliberately do NOT replace Russian source text with English before
+    translation.  Mixing English into the Russian input can make a machine
+    translation less reliable.  Instead, normalization only changes common
+    translated variants when the exact Russian glossary phrase was present.
+    """
+    result = re.sub(r"\s+", " ", str(text)).strip()
     return result
 
 
@@ -143,6 +151,9 @@ def load_model(name, device_name):
 
 
 def translate_batch(texts, tokenizer, model, device):
+    if not texts:
+        return []
+
     inputs = tokenizer(
         texts,
         return_tensors="pt",
@@ -160,19 +171,16 @@ def translate_batch(texts, tokenizer, model, device):
             max_new_tokens=128,
         )
 
-    return tokenizer.batch_decode(
-        translated_tokens,
-        skip_special_tokens=True,
-    )
+    return tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)
 
 
 def translate_context_group(texts, tokenizer, model, device):
     """
-    Translate a small group of neighboring segments together.
+    Translate a small group together and recover one result per segment.
 
-    Markers are included so we can put the translated text back onto the
-    correct original segments. If NLLB changes/drops the markers, return None
-    and the caller will fall back to individual translation.
+    The markers are used only to map results back to the original segment.
+    If the translation model drops or changes them, return None and let the
+    caller fall back to direct per-segment translation.
     """
     source = "\n".join(
         f"[[SEGMENT_{i}]] {text} [[END_SEGMENT_{i}]]"
@@ -193,23 +201,72 @@ def translate_context_group(texts, tokenizer, model, device):
     return results
 
 
+def translate_with_context(indices, segments, tokenizer, model, device, radius):
+    """Translate selected segment indices using nearby Russian context."""
+    if not indices:
+        return {}
+
+    results = {}
+    min_index = min(indices)
+    max_index = max(indices)
+
+    for center in indices:
+        group_start = max(0, center - radius)
+        group_end = min(len(segments), center + radius + 1)
+        group_indices = list(range(group_start, group_end))
+        texts = [str(segments[i].get("text", "")).strip() for i in group_indices]
+
+        if not all(texts):
+            direct = translate_batch([str(segments[center].get("text", "")).strip()], tokenizer, model, device)
+            results[center] = direct[0].strip() if direct else ""
+            continue
+
+        translated = translate_context_group(texts, tokenizer, model, device)
+        if translated is None:
+            direct = translate_batch([str(segments[center].get("text", "")).strip()], tokenizer, model, device)
+            results[center] = direct[0].strip() if direct else ""
+        else:
+            local_index = group_indices.index(center)
+            results[center] = translated[local_index]
+
+    return results
+
+
+def ensure_candidate_object(segment):
+    candidates = segment.get("translation_candidates")
+    if not isinstance(candidates, dict):
+        candidates = {}
+        segment["translation_candidates"] = candidates
+    return candidates
+
+
+def candidate_ready(segment, name):
+    candidates = segment.get("translation_candidates", {})
+    return isinstance(candidates, dict) and bool(str(candidates.get(name, "")).strip())
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Translate Russian Whisper JSON to English with NLLB."
+        description="Build contextual Russian-to-English translation evidence from Whisper JSON."
     )
     parser.add_argument("--input", required=True, help="Russian Whisper JSON input file.")
-    parser.add_argument("--output", required=True, help="Translated JSON output file.")
+    parser.add_argument("--output", required=True, help="Translation evidence JSON output file.")
     parser.add_argument(
         "--srt-output",
         default=None,
-        help="English SRT output. Defaults to <output stem>_en.srt.",
+        help="Primary English SRT output. Defaults to <output stem>_en.srt.",
     )
-    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="Primary translation model.")
+    parser.add_argument(
+        "--secondary-model",
+        default=DEFAULT_SECONDARY_MODEL,
+        help="Second translation model. Use 'none' to disable.",
+    )
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--start", type=int, default=0)
     parser.add_argument("--limit", type=int, default=None)
-    parser.add_argument("--save-every", type=int, default=25)
+    parser.add_argument("--save-every", type=int, default=10)
     parser.add_argument(
         "--glossary",
         default=None,
@@ -218,8 +275,13 @@ def main():
     parser.add_argument(
         "--context-window",
         type=int,
-        default=1,
-        help="Neighboring segments on each side for context mode; 0 disables it (default: 1).",
+        default=2,
+        help="Number of neighboring Russian segments on each side for contextual translation (default: 2).",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Regenerate translation candidates even if they already exist.",
     )
     args = parser.parse_args()
 
@@ -247,6 +309,8 @@ def main():
     glossary = load_glossary(args.glossary)
     print(f"Glossary entries: {len(glossary)}")
     print(f"Context window: {args.context_window}")
+    print(f"Primary model: {args.model}")
+    print(f"Secondary model: {args.secondary_model}")
 
     segments = data["segments"]
     total = len(segments)
@@ -256,100 +320,106 @@ def main():
     print(f"Segments: {total}")
     print(f"Requested range: {start}..{stop - 1}")
 
-    tokenizer, model, device = load_model(args.model, args.device)
+    primary_tokenizer, primary_model, device = load_model(args.model, args.device)
+
+    secondary_tokenizer = None
+    secondary_model = None
+    if args.secondary_model.lower() != "none":
+        secondary_tokenizer, secondary_model, _ = load_model(
+            args.secondary_model, args.device
+        )
+
+    pending = []
+    for i in range(start, stop):
+        text = str(segments[i].get("text", "")).strip()
+        if not text:
+            continue
+
+        needed = args.force or not candidate_ready(segments[i], "nllb_context")
+        if needed:
+            pending.append(i)
+
+    print(f"Segments needing translation evidence: {len(pending)}")
+
     translated_since_save = 0
 
-    # Context mode works in small overlapping groups. Each group is translated
-    # once and the markers identify which result belongs to which segment.
-    # Groups are deliberately small because NLLB is not intended for long
-    # document translation.
-    if args.context_window > 0:
-        i = start
-        while i < stop:
-            if str(segments[i].get("translation", "")).strip():
-                i += 1
-                continue
+    # Process one segment at a time at the evidence level.  Each segment is
+    # translated with context, directly, and (optionally) by the secondary
+    # model. This is slower than one giant batch but produces much more useful
+    # review data and remains safely resumable.
+    for position, index in enumerate(pending, start=1):
+        segment = segments[index]
+        source_text = str(segment.get("text", "")).strip()
+        candidates = ensure_candidate_object(segment)
 
-            radius = max(1, args.context_window)
-            group_start = max(start, i - radius)
-            group_end = min(stop, i + radius + 1)
-            group_indices = list(range(group_start, group_end))
+        hits = glossary_hits(source_text, glossary)
+        segment["translation_glossary_hits"] = hits
 
-            # If every segment in the group is already translated, move on.
-            pending_indices = [
-                j for j in group_indices
-                if not str(segments[j].get("translation", "")).strip()
-            ]
-            if not pending_indices:
-                i += 1
-                continue
+        # Context candidate: use neighboring Russian dialogue but store only
+        # the translation belonging to this segment.
+        context_result = translate_with_context(
+            [index],
+            segments,
+            primary_tokenizer,
+            primary_model,
+            device,
+            max(0, args.context_window),
+        )
+        candidates["nllb_context"] = normalize_translation(
+            context_result.get(index, ""), glossary
+        )
 
-            source_texts = []
-            for j in group_indices:
-                raw = str(segments[j].get("text", "")).strip()
-                source_texts.append(apply_glossary_to_source(raw, glossary))
+        # Direct candidate: no surrounding text, useful for detecting cases
+        # where context changes the interpretation too aggressively.
+        direct = translate_batch(
+            [source_text], primary_tokenizer, primary_model, device
+        )
+        candidates["nllb_direct"] = normalize_translation(
+            direct[0] if direct else "", glossary
+        )
 
-            # Context translation is attempted only when all source segments
-            # contain text. Empty Whisper segments are handled separately.
-            if all(source_texts):
-                translated = translate_context_group(
-                    source_texts, tokenizer, model, device
-                )
-            else:
-                translated = None
+        # Optional independent model provides a second machine-translation
+        # opinion. The models are different sizes, so disagreement is useful
+        # evidence rather than an attempt to declare one automatically correct.
+        if secondary_model is not None:
+            secondary_context = translate_with_context(
+                [index],
+                segments,
+                secondary_tokenizer,
+                secondary_model,
+                device,
+                max(0, args.context_window),
+            )
+            candidates["secondary_context"] = normalize_translation(
+                secondary_context.get(index, ""), glossary
+            )
 
-            if translated is None:
-                # Safe fallback: translate each pending segment independently.
-                fallback_texts = [source_texts[group_indices.index(j)] for j in pending_indices]
-                translated = translate_batch(
-                    fallback_texts, tokenizer, model, device
-                )
-                for j, text in zip(pending_indices, translated):
-                    segments[j]["translation"] = text.strip()
-                    translated_since_save += 1
-            else:
-                for local_index, j in enumerate(group_indices):
-                    if not str(segments[j].get("translation", "")).strip():
-                        segments[j]["translation"] = translated[local_index].strip()
-                        translated_since_save += 1
+            secondary_direct = translate_batch(
+                [source_text], secondary_tokenizer, secondary_model, device
+            )
+            candidates["secondary_direct"] = normalize_translation(
+                secondary_direct[0] if secondary_direct else "", glossary
+            )
 
-            print(f"Processed through segment {i}")
+        # Keep the old field for compatibility. This is NOT the final reviewed
+        # answer; it is simply the primary contextual candidate.
+        segment["translation"] = candidates.get("nllb_context", "")
+        segment["translation_review"] = {
+            "status": "unreviewed",
+            "selected": "",
+            "confidence": "",
+            "notes": "",
+        }
 
-            if translated_since_save >= args.save_every:
-                atomic_save_json(data, output_path)
-                print(f"Progress saved: {output_path}")
-                translated_since_save = 0
+        translated_since_save += 1
 
-            i += 1
-    else:
-        # Original independent-segment mode.
-        for batch_start in range(start, stop, args.batch_size):
-            batch_end = min(stop, batch_start + args.batch_size)
-            indices = []
-            texts = []
+        if position % 1 == 0:
+            print(f"Processed {position}/{len(pending)} (segment {index})")
 
-            for i in range(batch_start, batch_end):
-                if str(segments[i].get("translation", "")).strip():
-                    continue
-                text = str(segments[i].get("text", "")).strip()
-                if text:
-                    indices.append(i)
-                    texts.append(apply_glossary_to_source(text, glossary))
-                else:
-                    segments[i]["translation"] = ""
-
-            if indices:
-                translations = translate_batch(texts, tokenizer, model, device)
-                for index, translation in zip(indices, translations):
-                    segments[index]["translation"] = translation.strip()
-                    translated_since_save += 1
-
-            print(f"Processed through segment {batch_end - 1}")
-
-            if translated_since_save >= args.save_every:
-                atomic_save_json(data, output_path)
-                print(f"Progress saved: {output_path}")
-                translated_since_save = 0
+        if translated_since_save >= args.save_every:
+            atomic_save_json(data, output_path)
+            print(f"Progress saved: {output_path}")
+            translated_since_save = 0
 
     atomic_save_json(data, output_path)
 
@@ -358,11 +428,12 @@ def main():
         if args.srt_output
         else output_path.with_name(output_path.stem + "_en.srt")
     )
-    write_srt(data, srt_path)
+    write_srt(data, srt_path, field="translation")
 
     print("Done.")
     print(f"JSON: {output_path}")
     print(f"SRT:  {srt_path}")
+    print("The JSON now contains multiple translation candidates for review.")
 
 
 if __name__ == "__main__":
