@@ -10,12 +10,17 @@ Candidates:
   * nllb_context - primary NLLB model translated with nearby Russian context
   * nllb_direct  - primary NLLB model translated without context
   * secondary_context - optional second NLLB model with nearby context
-  * secondary_direct  - optional second NLLB model without context
+  * secondary_direct - optional second NLLB model without context
 
 The original segment timings and Whisper word timestamps are preserved.
 The legacy ``translation`` field is kept as the primary contextual candidate
 so existing downstream tools continue to work, but the new
 ``translation_candidates`` object is the important artifact for review.
+
+Glossary handling is deliberately post-translation. Russian source text is
+never replaced with English before NLLB sees it. Hard glossary entries can,
+however, correct known proper nouns/titles after translation while preserving
+the raw model candidates for comparison.
 
 This is intentionally an evidence-generation step, not an automatic final
 translation decision. Later we can compare these candidates with the
@@ -47,6 +52,66 @@ DEFAULT_GLOSSARY = {
     "Хэнсоны": "the Hensons",
     "Бобкэт": "Bobcat",
     "Р2-Д2": "R2-D2",
+}
+
+# Hard rules are intentionally separate from the raw glossary. They allow us
+# to correct known proper nouns/titles after translation without contaminating
+# the Russian text sent to NLLB. Raw model output remains preserved below.
+DEFAULT_HARD_GLOSSARY = {
+    "Супервойны на свалке": {
+        "english": "Junkyard Mega Wars",
+        "type": "title",
+        "aliases": [
+            "Superwars in the garbage",
+            "Superwarriors at the dump",
+            "Superheroes at the dump",
+            "Super-warriors at the dump",
+        ],
+    },
+    "Супер-войны на свалке": {
+        "english": "Junkyard Mega Wars",
+        "type": "title",
+        "aliases": [
+            "Superwars in the garbage",
+            "Superwarriors at the dump",
+            "Superheroes at the dump",
+            "Super-warriors at the dump",
+        ],
+    },
+    "Супер войны на свалке": {
+        "english": "Junkyard Mega Wars",
+        "type": "title",
+        "aliases": [
+            "Superwars in the garbage",
+            "Superwarriors at the dump",
+            "Superheroes at the dump",
+            "Super-warriors at the dump",
+        ],
+    },
+    "Войны на свалке": {
+        "english": "Junkyard Wars",
+        "type": "title",
+        "aliases": [
+            "Wars at the dump",
+            "Wars in the garbage",
+            "Wars on the junkyard",
+        ],
+    },
+    "КНБ": {
+        "english": "KNB",
+        "type": "organization",
+        "aliases": [
+            "NSA",
+            "N.C.B.",
+            "National Security Council",
+            "National Security Agency",
+        ],
+    },
+    "Р2-Д2": {
+        "english": "R2-D2",
+        "type": "proper_noun",
+        "aliases": ["R2 D2", "R2D2"],
+    },
 }
 
 
@@ -87,25 +152,55 @@ def write_srt(data, path: Path, field="translation"):
 
 
 def load_glossary(path):
+    """Load legacy string mappings and optional structured glossary entries."""
     glossary = dict(DEFAULT_GLOSSARY)
+    hard_rules = json.loads(json.dumps(DEFAULT_HARD_GLOSSARY))
+
     if not path:
-        return glossary
+        return glossary, hard_rules
 
     glossary_path = Path(path)
     with glossary_path.open("r", encoding="utf-8") as f:
         user_glossary = json.load(f)
 
     if not isinstance(user_glossary, dict):
-        raise ValueError("Glossary JSON must be an object of Russian -> English mappings.")
+        raise ValueError(
+            "Glossary JSON must be an object of Russian -> English mappings "
+            "or Russian -> structured entries."
+        )
 
-    glossary.update({str(k): str(v) for k, v in user_glossary.items()})
-    return glossary
+    for source, value in user_glossary.items():
+        source = str(source)
+        if isinstance(value, str):
+            glossary[source] = value
+            continue
+
+        if not isinstance(value, dict) or not str(value.get("english", "")).strip():
+            raise ValueError(
+                f"Glossary entry for {source!r} must be a string or an object "
+                "containing an 'english' value."
+            )
+
+        english = str(value["english"]).strip()
+        glossary[source] = english
+
+        strength = str(value.get("strength", "soft")).lower().strip()
+        if strength == "hard":
+            hard_rules[source] = {
+                "english": english,
+                "type": str(value.get("type", "term")),
+                "aliases": [str(alias) for alias in value.get("aliases", [])],
+            }
+
+    return glossary, hard_rules
 
 
 def glossary_hits(text, glossary):
     """Return glossary entries present in a Russian source segment."""
     hits = []
-    for source, target in sorted(glossary.items(), key=lambda item: len(item[0]), reverse=True):
+    for source, target in sorted(
+        glossary.items(), key=lambda item: len(item[0]), reverse=True
+    ):
         if source.lower() in text.lower():
             hits.append({"russian": source, "english": target})
     return hits
@@ -114,6 +209,63 @@ def glossary_hits(text, glossary):
 def normalize_translation(text):
     """Conservative cleanup; do not rewrite model meaning automatically."""
     return re.sub(r"\s+", " ", str(text)).strip()
+
+
+def apply_hard_glossary(source_text, translation, hard_rules):
+    """
+    Apply only explicitly hard glossary rules to one model translation.
+
+    Title entries replace the whole model candidate because the Russian source
+    directly identifies the title. Other hard entries only replace known bad
+    English aliases. Unknown model wording is left alone rather than guessed.
+    """
+    result = normalize_translation(translation)
+    corrections = []
+    source_lower = source_text.lower()
+
+    matching_rules = [
+        (russian, rule)
+        for russian, rule in hard_rules.items()
+        if russian.lower() in source_lower
+    ]
+    matching_rules.sort(key=lambda item: len(item[0]), reverse=True)
+
+    for russian, rule in matching_rules:
+        english = normalize_translation(rule.get("english", ""))
+        if not english:
+            continue
+
+        rule_type = str(rule.get("type", "term")).lower()
+        aliases = [
+            normalize_translation(alias)
+            for alias in rule.get("aliases", [])
+            if str(alias).strip()
+        ]
+
+        if rule_type == "title":
+            if result != english:
+                corrections.append({
+                    "russian": russian,
+                    "from": result,
+                    "to": english,
+                    "reason": "hard glossary title",
+                })
+                result = english
+            continue
+
+        for alias in aliases:
+            pattern = re.compile(re.escape(alias), flags=re.IGNORECASE)
+            new_result, count = pattern.subn(english, result)
+            if count:
+                corrections.append({
+                    "russian": russian,
+                    "from": result,
+                    "to": new_result,
+                    "reason": f"hard glossary {rule_type} alias",
+                })
+                result = normalize_translation(new_result)
+
+    return result, corrections
 
 
 def load_model(name, device_name):
@@ -249,11 +401,9 @@ def pending_indices(segments, start, stop, candidate_name, force):
     return result
 
 
-def translate_primary(data, start, stop, args, glossary):
+def translate_primary(data, start, stop, args, glossary, hard_rules):
     segments = data["segments"]
-    pending = pending_indices(
-        segments, start, stop, "nllb_context", args.force
-    )
+    pending = pending_indices(segments, start, stop, "nllb_context", args.force)
     print(f"Primary candidates needed: {len(pending)}")
     if not pending:
         return
@@ -279,13 +429,13 @@ def translate_primary(data, start, stop, args, glossary):
         )
 
         direct = translate_batch([source_text], tokenizer, model, device)
-        candidates["nllb_direct"] = normalize_translation(
-            direct[0] if direct else ""
-        )
+        candidates["nllb_direct"] = normalize_translation(direct[0] if direct else "")
 
-        # Preserve compatibility with the earlier script. This is merely the
-        # primary candidate, not a human-reviewed final translation.
-        segment["translation"] = candidates["nllb_context"]
+        corrected, corrections = apply_hard_glossary(
+            source_text, candidates["nllb_context"], hard_rules
+        )
+        segment["translation"] = corrected
+        segment["translation_glossary_corrections"] = corrections
         segment["translation_review"] = segment.get(
             "translation_review",
             {"status": "unreviewed", "selected": "", "confidence": "", "notes": ""},
@@ -309,15 +459,12 @@ def translate_secondary(data, start, stop, args):
         return
 
     segments = data["segments"]
-    pending = pending_indices(
-        segments, start, stop, "secondary_context", args.force
-    )
+    pending = pending_indices(segments, start, stop, "secondary_context", args.force)
     print(f"Secondary candidates needed: {len(pending)}")
     if not pending:
         return
 
     # The secondary model is loaded only after the primary model is unloaded.
-    # This avoids holding both NLLB models in GPU memory at the same time.
     tokenizer, model, device = load_model(args.secondary_model, args.device)
     translated_since_save = 0
 
@@ -338,9 +485,7 @@ def translate_secondary(data, start, stop, args):
         )
 
         direct = translate_batch([source_text], tokenizer, model, device)
-        candidates["secondary_direct"] = normalize_translation(
-            direct[0] if direct else ""
-        )
+        candidates["secondary_direct"] = normalize_translation(direct[0] if direct else "")
 
         translated_since_save += 1
         print(f"Secondary: {position}/{len(pending)} (segment {index})")
@@ -379,7 +524,11 @@ def main():
     parser.add_argument(
         "--glossary",
         default=None,
-        help="Optional JSON object mapping Russian terms/phrases to desired English forms.",
+        help=(
+            "Optional JSON object mapping Russian terms to English strings or "
+            "structured entries. Structured hard entries can use english, "
+            "type, strength=hard, and aliases."
+        ),
     )
     parser.add_argument(
         "--context-window",
@@ -415,8 +564,9 @@ def main():
     else:
         data = json.loads(json.dumps(input_data))
 
-    glossary = load_glossary(args.glossary)
+    glossary, hard_rules = load_glossary(args.glossary)
     print(f"Glossary entries: {len(glossary)}")
+    print(f"Hard glossary rules: {len(hard_rules)}")
     print(f"Context window: {args.context_window}")
     print(f"Primary model: {args.model}")
     print(f"Secondary model: {args.secondary_model}")
@@ -431,7 +581,7 @@ def main():
 
     # Run models sequentially so the two checkpoints do not simultaneously
     # consume GPU memory. This is especially important for the 1.3B model.
-    translate_primary(data, start, stop, args, glossary)
+    translate_primary(data, start, stop, args, glossary, hard_rules)
     translate_secondary(data, start, stop, args)
 
     atomic_save_json(data, output_path)
@@ -442,11 +592,7 @@ def main():
         else output_path.with_name(output_path.stem + "_en.srt")
     )
     write_srt(data, srt_path, field="translation")
-
-    print("Done.")
-    print(f"JSON: {output_path}")
-    print(f"SRT:  {srt_path}")
-    print("The JSON contains multiple translation candidates for later evidence review.")
+    print(f"English SRT written: {srt_path}")
 
 
 if __name__ == "__main__":
