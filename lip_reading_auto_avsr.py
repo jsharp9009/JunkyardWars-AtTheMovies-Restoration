@@ -25,15 +25,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-
-
-DEFAULT_CHECKPOINT_NAME = "vsr_trlrwlrs2lrs3vox2avsp_base.pth"
 
 
 def parse_args() -> argparse.Namespace:
@@ -72,10 +70,7 @@ def parse_args() -> argparse.Namespace:
         "--detector",
         choices=("retinaface", "mediapipe"),
         default="mediapipe",
-        help=(
-            "Face detector to use. mediapipe is the default because it avoids "
-            "the hard-coded CUDA device in the older RetinaFace demo."
-        ),
+        help="Face detector to use (default: mediapipe)",
     )
     parser.add_argument(
         "--keep-clip",
@@ -141,31 +136,55 @@ def run_auto_avsr(
     clip: Path,
     detector: str,
 ) -> tuple[str, str, int]:
+    """Run the upstream demo without permanently modifying its checkout.
+
+    The older Auto-AVSR demo hard-codes InferencePipeline(cfg) and therefore
+    always selects RetinaFace. We make a temporary copy of demo.py and inject
+    the detector argument so MediaPipe can be selected without changing the
+    external repository.
+    """
     demo = auto_avsr_dir / "demo.py"
     require_file(demo, "Auto-AVSR demo.py")
 
+    source = demo.read_text(encoding="utf-8")
+    original = "pipeline = InferencePipeline(cfg)"
+    replacement = (
+        "pipeline = InferencePipeline("
+        "cfg, detector=os.environ.get(\"AUTO_AVSR_DETECTOR\", \"retinaface\")"
+        ")"
+    )
+
+    if original not in source:
+        raise SystemExit(
+            "The Auto-AVSR demo.py layout is different from the version this "
+            "runner supports. Inspect demo.py before continuing."
+        )
+
+    patched_source = source.replace(original, replacement, 1)
+    patched_demo = auto_avsr_dir / ".junkyard_auto_avsr_demo.py"
+    patched_demo.write_text(patched_source, encoding="utf-8")
+
     command = [
         sys.executable,
-        str(demo),
+        str(patched_demo),
         "data.modality=video",
         f"pretrained_model_path={checkpoint.resolve()}",
         f"file_path={clip.resolve()}",
     ]
 
-    # The stock demo hard-codes RetinaFace to cuda:0. For this reason we use
-    # MediaPipe by default and patch the detector choice through a tiny
-    # environment variable consumed below when supported by our wrapper.
-    # The older demo itself does not expose detector= as a Hydra argument.
-    env = dict(**__import__("os").environ)
+    env = os.environ.copy()
     env["AUTO_AVSR_DETECTOR"] = detector
 
-    completed = subprocess.run(
-        command,
-        cwd=auto_avsr_dir,
-        text=True,
-        capture_output=True,
-        env=env,
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            cwd=auto_avsr_dir,
+            text=True,
+            capture_output=True,
+            env=env,
+        )
+    finally:
+        patched_demo.unlink(missing_ok=True)
 
     return completed.stdout, completed.stderr, completed.returncode
 
