@@ -1,24 +1,29 @@
-"""Run Auto-AVSR visual speech recognition against a video clip.
+"""Run Auto-AVSR v1.0.0 visual speech recognition against a video clip.
 
 This is intentionally a small test runner rather than a full-episode pipeline.
-Auto-AVSR is an external dependency/repository. Install it separately and point
---auto-avsr-dir at that checkout.
+Auto-AVSR is an external dependency/repository. Use the official v1.0.0
+checkout, which contains demo.py and configs/config.yaml.
 
 The first phase of lip-reading is evidence gathering. This script therefore
 keeps the raw Auto-AVSR stdout and writes a small JSON record rather than
 pretending the transcript has reliable word-level timestamps.
 
+The v1.0.0 demo defaults to the RetinaFace detector, whose implementation
+requires CUDA. This runner temporarily patches the demo's final
+InferencePipeline call so MediaPipe is selected instead. The external
+Auto-AVSR checkout itself is never modified.
+
 Example:
     python lip_reading_auto_avsr.py \
         --video "C:/Junkyard Restoration/source/episode.mp4" \
-        --auto-avsr-dir "C:/AI/auto_avsr" \
-        --checkpoint "C:/AI/auto_avsr/pretrained/vsr_trlrwlrs2lrs3vox2avsp_base.pth" \
+        --auto-avsr-dir "C:/AI/auto_avsr_v1" \
+        --checkpoint "C:/AI/auto_avsr_v1/vsr_trlrwlrs2lrs3vox2avsp_base.pth" \
         --start 600 \
-        --duration 60
+        --duration 20
 
-Auto-AVSR's published demo accepts video/audio input and a pretrained model;
-its visual-only model is the VSR/lip-reading path. See the project README for
-installation and model-zoo details.
+Auto-AVSR v1.0.0's official demo supports video-only inference. The model
+zoo's strongest visual-only LRS3 checkpoint is
+vsr_trlrwlrs2lrs3vox2avsp_base.pth.
 """
 
 from __future__ import annotations
@@ -36,13 +41,13 @@ from pathlib import Path
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run Auto-AVSR visual-only speech recognition on a video clip."
+        description="Run Auto-AVSR v1.0.0 visual-only speech recognition on a video clip."
     )
     parser.add_argument("--video", required=True, help="Source episode video")
     parser.add_argument(
         "--auto-avsr-dir",
         required=True,
-        help="Path to the Auto-AVSR checkout containing demo.py",
+        help="Path to the Auto-AVSR v1.0.0 checkout containing demo.py and configs/",
     )
     parser.add_argument(
         "--checkpoint",
@@ -58,8 +63,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--duration",
         type=float,
-        default=60.0,
-        help="Duration of the test clip in seconds (default: 60)",
+        default=20.0,
+        help="Duration of the test clip in seconds (default: 20)",
     )
     parser.add_argument(
         "--output",
@@ -68,9 +73,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--detector",
-        choices=("retinaface", "mediapipe"),
+        choices=("mediapipe",),
         default="mediapipe",
-        help="Face detector to use (default: mediapipe)",
+        help="Face detector to use; CPU testing uses MediaPipe (default: mediapipe)",
     )
     parser.add_argument(
         "--keep-clip",
@@ -83,6 +88,17 @@ def parse_args() -> argparse.Namespace:
 def require_file(path: Path, label: str) -> None:
     if not path.is_file():
         raise SystemExit(f"{label} does not exist: {path}")
+
+
+def require_auto_avsr_v1(auto_avsr_dir: Path) -> None:
+    if not auto_avsr_dir.is_dir():
+        raise SystemExit(f"Auto-AVSR directory does not exist: {auto_avsr_dir}")
+
+    require_file(auto_avsr_dir / "demo.py", "Auto-AVSR v1.0.0 demo.py")
+    require_file(
+        auto_avsr_dir / "configs" / "config.yaml",
+        "Auto-AVSR v1.0.0 configs/config.yaml",
+    )
 
 
 def make_clip(source: Path, destination: Path, start: float, duration: float) -> None:
@@ -104,18 +120,13 @@ def make_clip(source: Path, destination: Path, start: float, duration: float) ->
         str(duration),
         "-map",
         "0:v:0",
-        "-map",
-        "0:a?",
         "-c:v",
         "libx264",
         "-preset",
         "fast",
         "-crf",
         "18",
-        "-c:a",
-        "aac",
-        "-b:a",
-        "192k",
+        "-an",
         "-y",
         str(destination),
     ]
@@ -136,15 +147,15 @@ def run_auto_avsr(
     clip: Path,
     detector: str,
 ) -> tuple[str, str, int]:
-    """Run the upstream demo without permanently modifying its checkout.
+    """Run the official v1.0.0 demo without modifying its checkout.
 
-    The older Auto-AVSR demo hard-codes InferencePipeline(cfg) and therefore
-    always selects RetinaFace. We make a temporary copy of demo.py and inject
-    the detector argument so MediaPipe can be selected without changing the
-    external repository.
+    Auto-AVSR v1.0.0's demo.py constructs InferencePipeline(cfg) without
+    exposing the detector as a Hydra option. Its default detector is RetinaFace,
+    which requires CUDA. We make a temporary copy and inject the detector
+    argument so CPU + MediaPipe can be selected.
     """
     demo = auto_avsr_dir / "demo.py"
-    require_file(demo, "Auto-AVSR demo.py")
+    require_file(demo, "Auto-AVSR v1.0.0 demo.py")
 
     source = demo.read_text(encoding="utf-8")
     original = "pipeline = InferencePipeline(cfg)"
@@ -156,8 +167,8 @@ def run_auto_avsr(
 
     if original not in source:
         raise SystemExit(
-            "The Auto-AVSR demo.py layout is different from the version this "
-            "runner supports. Inspect demo.py before continuing."
+            "The Auto-AVSR v1.0.0 demo.py layout is different from the version "
+            "this runner supports. Inspect demo.py before continuing."
         )
 
     patched_source = source.replace(original, replacement, 1)
@@ -206,8 +217,7 @@ def main() -> None:
 
     require_file(source, "Video")
     require_file(checkpoint, "Checkpoint")
-    if not auto_avsr_dir.is_dir():
-        raise SystemExit(f"Auto-AVSR directory does not exist: {auto_avsr_dir}")
+    require_auto_avsr_v1(auto_avsr_dir)
 
     output.parent.mkdir(parents=True, exist_ok=True)
 
@@ -221,10 +231,10 @@ def main() -> None:
         ) as temp:
             clip_path = Path(temp.name)
 
-        print(f"Creating test clip: {clip_path}")
+        print(f"Creating visual-only test clip: {clip_path}")
         make_clip(source, clip_path, args.start, args.duration)
 
-        print("Running Auto-AVSR visual speech recognition...")
+        print("Running Auto-AVSR v1.0.0 visual speech recognition on CPU...")
         stdout, stderr, returncode = run_auto_avsr(
             auto_avsr_dir,
             checkpoint,
@@ -234,11 +244,14 @@ def main() -> None:
 
         result = {
             "tool": "Auto-AVSR",
+            "version": "v1.0.0",
             "mode": "visual",
+            "device": "cpu",
             "source_video": str(source),
             "source_start": args.start,
             "source_duration_requested": args.duration,
             "test_clip": str(clip_path) if args.keep_clip else None,
+            "auto_avsr_dir": str(auto_avsr_dir),
             "checkpoint": str(checkpoint),
             "detector": args.detector,
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -247,8 +260,8 @@ def main() -> None:
             "stdout": stdout,
             "stderr": stderr,
             "timestamp_note": (
-                "Auto-AVSR demo output is retained as raw evidence. This wrapper "
-                "does not invent word-level timestamps."
+                "Auto-AVSR v1.0.0 demo output is retained as raw evidence. "
+                "This wrapper does not invent word-level timestamps."
             ),
         }
 
