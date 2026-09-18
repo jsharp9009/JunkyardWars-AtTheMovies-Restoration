@@ -146,15 +146,17 @@ def normalized_for_compare(value: str) -> str:
 
 
 def candidate_disagreement(segments: list[dict[str, Any]]) -> bool:
-    values: set[str] = set()
-
+    """Return True when candidates disagree within at least one source segment."""
     for segment in segments:
-        for value in candidate_values(segment).values():
-            normalized = normalized_for_compare(value)
-            if normalized:
-                values.add(normalized)
+        values = {
+            normalized_for_compare(value)
+            for value in candidate_values(segment).values()
+            if normalized_for_compare(value)
+        }
+        if len(values) > 1:
+            return True
 
-    return len(values) > 1
+    return False
 
 
 def collect_russian_evidence(
