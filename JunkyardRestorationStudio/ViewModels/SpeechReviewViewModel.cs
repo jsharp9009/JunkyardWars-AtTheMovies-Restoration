@@ -41,6 +41,15 @@ public partial class SpeechReviewItem : ObservableObject
     public string DurationDisplay => $"{Math.Max(0, End - Start):0.00}s";
     public string BoundaryDisplay => $"Start: {BoundaryStartSource} • End: {BoundaryEndSource}";
 
+    // Evidence-review views use SpeechReviewItem as the common compile-time type.
+    // These virtual properties are overridden by SpeechEvidenceItem.
+    public virtual string RussianText => "";
+    public virtual string RecoveredEnglishText => "";
+    public virtual string TranslatedRegionText => Text;
+    public virtual string TranslationCandidatesDisplay => "";
+    public virtual string EvidenceFlagsDisplay => "None";
+    public virtual bool NeedsAttention => false;
+
     public SpeechReviewItem(SpeechReviewRegion region, SpeechReviewDecision? decision)
     {
         sourceRegion = region;
