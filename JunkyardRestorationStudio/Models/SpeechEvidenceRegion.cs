@@ -133,15 +133,15 @@ public partial class SpeechEvidenceItem : SpeechReviewItem
         TranslatedRegionText = evidence.TranslatedRegionText ?? "";
     }
 
-    public string RussianText { get; }
-    public string RecoveredEnglishText { get; }
-    public string TranslatedRegionText { get; }
+    public override string RussianText { get; }
+    public override string RecoveredEnglishText { get; }
+    public override string TranslatedRegionText { get; }
     public IReadOnlyList<RussianEvidenceSegment> TranslationSegments { get; }
     public IReadOnlyList<EnglishAsrSegment> EvidenceAsrSegments { get; }
     public IReadOnlyList<string> EvidenceFlags { get; }
-    public bool NeedsAttention { get; }
+    public override bool NeedsAttention { get; }
 
-    public string TranslationCandidatesDisplay
+    public override string TranslationCandidatesDisplay
     {
         get
         {
@@ -156,7 +156,7 @@ public partial class SpeechEvidenceItem : SpeechReviewItem
         }
     }
 
-    public string EvidenceFlagsDisplay =>
+    public override string EvidenceFlagsDisplay =>
         EvidenceFlags.Count == 0 ? "None" : string.Join(" • ", EvidenceFlags);
 
     private static SpeechReviewRegion ToReviewRegion(SpeechEvidenceRegion evidence) => new()
