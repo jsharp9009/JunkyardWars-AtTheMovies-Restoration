@@ -72,7 +72,7 @@ public class RussianEvidenceSegment
     public List<GlossaryHit> GlossaryHits { get; set; } = [];
 
     [JsonPropertyName("glossary_corrections")]
-    public List<string> GlossaryCorrections { get; set; } = [];
+    public List<GlossaryCorrection> GlossaryCorrections { get; set; } = [];
 
     [JsonPropertyName("translation_review")]
     public TranslationReview TranslationReview { get; set; } = new();
@@ -85,7 +85,7 @@ public class GlossaryHit
     public string English { get; set; } = "";
 }
 
-public class TranslationReview
+\npublic class GlossaryCorrection\n{\n    public string Russian { get; set; } = "";\n    public string English { get; set; } = "";\n}\n\npublic class TranslationReview
 {
     public string Status { get; set; } = "unreviewed";
     public string Selected { get; set; } = "";
