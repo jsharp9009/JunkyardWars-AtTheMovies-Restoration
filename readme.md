@@ -5,11 +5,11 @@
 
 ## Project Status
 
-**Current phase: AI-assisted reconstruction planning.**
+**Current phase: speech-evidence and reconstruction planning.**
 
 The source-separation and human-selection stages are complete. We now have a primary episode-length reconstruction assembled from the best portions of four MossFormer2 separation runs, plus a separate silence-based reconstruction retained as a targeted rescue source.
 
-The important next realization is that separation alone cannot recover every section of the original English soundtrack. The surviving English is still badly muffled or incomplete in some places. The next phase is therefore to identify sections that remain unrecoverable and investigate **selective AI-assisted reconstruction of the missing or severely degraded English speech**.
+The important next realization is that separation alone cannot recover every section of the original English soundtrack. The surviving English is still badly muffled or incomplete in some places. We have also established that automatic Russian-to-English translation and lip reading are useful only as evidence, not as unquestioned ground truth. The next phase is therefore to establish the most trustworthy wording for difficult dialogue and then investigate **selective AI-assisted reconstruction of missing or severely degraded English speech**.
 
 The project is **not** ready for final video/audio recombination. The video will remain separate until the English soundtrack restoration is substantially complete.
 
@@ -139,6 +139,7 @@ Surviving Russian-dubbed episode
 - SoundFile
 - Librosa
 - Matplotlib
+- OpenAI Whisper
 
 ## Source separation
 
@@ -594,6 +595,141 @@ A small number of isolated anomalies were noticed during listening, but subseque
 
 ---
 
+# Speech Review Segmentation
+
+A second review layer was built after the 337 separation-run review was complete. Its purpose is different: it identifies natural speech regions in the restored English audio so later transcription and reconstruction work can operate on meaningful dialogue rather than arbitrary subtitle timestamps.
+
+## `build_speech_review_map.py`
+
+The script uses the restored English audio, quiet-region detection, and the translated English SRT as linguistic guidance. SRT cue boundaries are **not** treated as hard audio cuts.
+
+The first successful full-episode run produced:
+
+```text
+Audio duration:       5641.475s
+SRT cues:              2204
+Quiet regions:         2995
+Review regions:         749
+Natural starts:         559 / 749
+Natural ends:           535 / 749
+```
+
+This produced 749 speech-review regions. Most region boundaries are naturally aligned to quiet portions of the audio; the remaining boundaries use fallbacks and can be adjusted during human review.
+
+The resulting `speech_review_map.json` stores information such as:
+
+- start/end times;
+- related subtitle IDs;
+- translated dialogue text;
+- whether boundaries were found naturally or by fallback;
+- quality;
+- speaker category;
+- speaker confidence;
+- known speaker name where applicable;
+- human notes.
+
+## Speech Review in Junkyard Restoration Studio
+
+The existing Avalonia application was extended with a dedicated **Speech Review** tab.
+
+The speech-review workflow supports:
+
+- previous/next navigation with save-on-navigation;
+- immediate saving of boundary adjustments;
+- region playback;
+- playback with surrounding context;
+- quality classification;
+- speaker classification;
+- speaker confidence;
+- known speaker name;
+- notes;
+- keyboard shortcuts;
+- persistent review decisions.
+
+Current quality categories are:
+
+- `Good`
+- `Muffled`
+- `Partial`
+- `Missing`
+
+Speaker categories are:
+
+- `Known`
+- `Multiple`
+- `Unknown`
+
+The application intentionally allows `Multiple` speakers rather than forcing premature speaker separation. Individual speaker splitting can be performed later where it becomes necessary for reconstruction.
+
+---
+
+# Whisper and Translation Experiments
+
+## Russian Whisper transcription
+
+The Russian Whisper transcription was refined with:
+
+- explicit Russian language selection;
+- transcription rather than translation;
+- word timestamps;
+- `condition_on_previous_text=False`;
+- an automotive/mechanical Junkyard Wars prompt.
+
+The resulting Russian transcript is now considered sufficiently useful for the current evidence workflow. Further ASR model experimentation is not currently planned unless a specific problem requires it.
+
+## WhisperX experiment
+
+WhisperX was tested as a possible improvement to the Russian transcript. It produced different timestamps and better alignment structure, but the recognized Russian words were substantially the same as the existing Whisper output.
+
+Because the underlying ASR did not materially improve for this source, WhisperX was not adopted as the primary transcription pipeline.
+
+## Russian-to-English translation
+
+The first translation attempts showed that the Russian transcript is much more useful than naive Russian-to-English translation. A dedicated translation stage was therefore built rather than asking Whisper to perform the final translation.
+
+`translate_json.py` now supports multiple NLLB-200 translation candidates, including:
+
+- contextual translation with neighboring Russian segments;
+- direct translation;
+- a second NLLB model for an independent candidate;
+- glossary tracking;
+- explicit terminology corrections;
+- resumable output;
+- periodic saves;
+- preservation of competing candidates for later review.
+
+The current approach uses:
+
+```text
+facebook/nllb-200-distilled-600M
+facebook/nllb-200-distilled-1.3B
+```
+
+The larger model is loaded separately so both models do not need to remain in memory simultaneously.
+
+The translation output keeps the Russian source intact and records candidate translations separately. This is important because several observed examples showed that both translation models can confidently produce incorrect interpretations of technical terms, proper names, or short responses.
+
+The show title and recurring terms such as `KNB` and `R2-D2` are handled through an explicit glossary/correction layer.
+
+The translation stage is therefore an **evidence generator**, not a final authority.
+
+---
+
+# Lip-Reading Experiment — Abandoned
+
+Lip reading was tested as a third independent evidence source because the restoration needed another way to determine difficult English dialogue.
+
+The official Auto-AVSR v1.0.0 visual speech-recognition model was installed locally and run against representative episode footage using the official visual checkpoint. The test was performed on CPU with MediaPipe face detection.
+
+The model produced a transcript, but it was extremely inaccurate for this footage. A second targeted test remained poor.
+
+The conclusion is:
+
+> **Lip reading is not reliable enough for this episode and has been abandoned as an active evidence source.**
+
+The Auto-AVSR experiment remains documented because it was a meaningful negative result. No additional lip-reading model work is currently planned.
+
+---
 # Current Restoration Workflow
 
 The project has now moved beyond source selection. The current conceptual pipeline is:
@@ -622,7 +758,7 @@ The project has now moved beyond source selection. The current conceptual pipeli
 11. Final restored episode
 ```
 
-The important distinction is that the first five stages are about **recovering information that already exists somewhere in the damaged source**. The next stages may require **reconstructing information that cannot be adequately recovered from the source audio alone**.
+The important distinction is that the separation and rescue stages are about **recovering information that already exists somewhere in the damaged source**. The evidence and review stages are about determining what that recovered material actually means. The later reconstruction stages may require **creating information that cannot be adequately recovered from the source audio alone**.
 
 ---
 
@@ -793,6 +929,15 @@ The repository is the canonical home for project scripts and documentation.
 - [x] Retain silence-based reconstruction as a targeted rescue source.
 - [x] Perform targeted alternate-source/edit-map processing.
 - [x] Produce a working reconstruction containing localized rescue edits.
+- [x] Generate Russian Whisper transcript with word timestamps for translation/evidence work.
+- [x] Test WhisperX alignment as an alternative Russian ASR workflow.
+- [x] Build contextual multi-candidate Russian-to-English translation workflow.
+- [x] Add translation glossary and explicit terminology corrections.
+- [x] Build natural-speech-region map for review rather than using subtitle timestamps as hard audio cuts.
+- [x] Build Speech Review workflow in Junkyard Restoration Studio with quality, speaker, confidence, boundaries, and notes.
+- [x] Evaluate Auto-AVSR lip reading on representative footage.
+- [x] Abandon lip reading after poor results.
+- [ ] Review difficult dialogue using Russian, recovered-English, and translation evidence.
 - [ ] Identify all sections that still require genuine reconstruction.
 - [ ] Evaluate local/free/open-source AI speech reconstruction approaches.
 - [ ] Reconstruct selected missing or severely muffled English dialogue.
@@ -809,7 +954,7 @@ The work completed so far should not be viewed as a failure because the resultin
 
 The separation and review stages achieved their actual purpose: they extracted and preserved as much usable information as possible from the surviving Russian-dubbed source.
 
-The project is now at the point where additional improvement requires a different class of techniques.
+The project is now at the point where additional improvement requires a different class of techniques. Before generating replacement speech, however, the wording of difficult dialogue needs to be established as carefully as practical from the surviving evidence.
 
 The next challenge is therefore not:
 
