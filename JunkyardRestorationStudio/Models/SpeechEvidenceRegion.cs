@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using JunkyardRestorationStudio.ViewModels;
 
 namespace JunkyardRestorationStudio.Models;
 
@@ -68,13 +69,20 @@ public class RussianEvidenceSegment
     public string Translation { get; set; } = "";
 
     [JsonPropertyName("glossary_hits")]
-    public List<string> GlossaryHits { get; set; } = [];
+    public List<GlossaryHit> GlossaryHits { get; set; } = [];
 
     [JsonPropertyName("glossary_corrections")]
     public List<string> GlossaryCorrections { get; set; } = [];
 
     [JsonPropertyName("translation_review")]
     public TranslationReview TranslationReview { get; set; } = new();
+}
+
+
+public class GlossaryHit
+{
+    public string Russian { get; set; } = "";
+    public string English { get; set; } = "";
 }
 
 public class TranslationReview
