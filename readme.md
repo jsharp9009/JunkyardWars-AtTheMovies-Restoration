@@ -661,6 +661,43 @@ Speaker categories are:
 
 The application intentionally allows `Multiple` speakers rather than forcing premature speaker separation. Individual speaker splitting can be performed later where it becomes necessary for reconstruction.
 
+## Dialogue Evidence Map
+
+The next evidence-review layer is built with `build_speech_evidence_map.py`.
+
+It joins each natural speech-review region with:
+
+- the Russian Whisper/translation JSON;
+- all available Russian-to-English translation candidates;
+- recovered-English Whisper ASR;
+- English ASR word-confidence information where available;
+- existing human quality, speaker, confidence, and notes metadata.
+
+The script matches evidence by **time overlap**, not by subtitle or segment number. This is intentional because the review map and transcription/translation artifacts can have different cue numbering.
+
+Example:
+
+```text
+python build_speech_evidence_map.py \
+    --review-map speech_review_map.json \
+    --translation translation_text.json \
+    --english-asr audio_large.json \
+    --output speech_evidence_map.json
+```
+
+The resulting `speech_evidence_map.json` is an evidence artifact for human review. It does not automatically decide the final English wording.
+
+Each region contains:
+
+- Russian source evidence;
+- translation candidates;
+- recovered-English ASR evidence;
+- conservative attention flags;
+- an empty `review.final_text` field for the human-established wording;
+- review confidence, evidence source, and notes.
+
+The evidence map deliberately keeps recovered English separate from translation. A translated sentence is an interpretation of the Russian dub; recovered English ASR is evidence from the surviving English audio. Neither is automatically treated as authoritative.
+
 ---
 
 # Whisper and Translation Experiments
