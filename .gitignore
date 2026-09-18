@@ -498,3 +498,6 @@ audio_en.json
 speaker1_full.json
 whisperx_en.json
 whisperx_russian.json
+translation_text.json
+restored_combine_preview.json
+speech_evidence_map.json

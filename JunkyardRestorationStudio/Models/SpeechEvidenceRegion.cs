@@ -85,7 +85,14 @@ public class GlossaryHit
     public string English { get; set; } = "";
 }
 
-\npublic class GlossaryCorrection\n{\n    public string Russian { get; set; } = "";\n    public string English { get; set; } = "";\n}\n\npublic class TranslationReview
+
+public class GlossaryCorrection
+{
+    public string Russian { get; set; } = "";
+    public string English { get; set; } = "";
+}
+
+public class TranslationReview
 {
     public string Status { get; set; } = "unreviewed";
     public string Selected { get; set; } = "";
