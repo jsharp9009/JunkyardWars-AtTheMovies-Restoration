@@ -11,6 +11,107 @@ using System.Threading.Tasks;
 
 namespace JunkyardRestorationStudio.ViewModels;
 
+public partial class SpeechReviewItem : ObservableObject
+{
+    private readonly SpeechReviewRegion sourceRegion;
+
+    public int Id { get; }
+    public double OriginalStart { get; }
+    public double OriginalEnd { get; }
+
+    [ObservableProperty] private double start;
+    [ObservableProperty] private double end;
+    [ObservableProperty] private string quality = "";
+    [ObservableProperty] private string speaker = "";
+    [ObservableProperty] private string knownSpeakerName = "";
+    [ObservableProperty] private string speakerConfidence = "";
+    [ObservableProperty] private string notes = "";
+    [ObservableProperty] private string finalText = "";
+    [ObservableProperty] private string reviewConfidence = "";
+    [ObservableProperty] private string evidenceSource = "";
+
+    public int[] SubtitleIds { get; }
+    public string Text { get; }
+    public string BoundaryStartSource { get; }
+    public string BoundaryEndSource { get; }
+
+    public bool IsKnownSpeaker => Speaker == "Known";
+
+    public string PositionDisplay => $"{Start:0.00}s – {End:0.00}s";
+    public string DurationDisplay => $"{Math.Max(0, End - Start):0.00}s";
+    public string BoundaryDisplay => $"Start: {BoundaryStartSource} • End: {BoundaryEndSource}";
+
+    public SpeechReviewItem(SpeechReviewRegion region, SpeechReviewDecision? decision)
+    {
+        sourceRegion = region;
+
+        Id = region.Id;
+        OriginalStart = decision?.OriginalStart > 0 ? decision.OriginalStart : region.Start;
+        OriginalEnd = decision?.OriginalEnd > 0 ? decision.OriginalEnd : region.End;
+
+        SubtitleIds = region.SubtitleIds ?? [];
+        Text = region.Text ?? "";
+        BoundaryStartSource = region.BoundaryStartSource ?? "";
+        BoundaryEndSource = region.BoundaryEndSource ?? "";
+
+        Start = decision?.Start ?? region.Start;
+        End = decision?.End ?? region.End;
+        Quality = decision?.Quality ?? region.Quality ?? "";
+        Speaker = decision?.Speaker ?? region.Speaker ?? "";
+        KnownSpeakerName = decision?.KnownSpeakerName ?? "";
+        SpeakerConfidence = decision?.SpeakerConfidence ?? region.SpeakerConfidence ?? "";
+        Notes = decision?.Notes ?? region.Notes ?? "";
+        FinalText = decision?.FinalText ?? "";
+        ReviewConfidence = decision?.ReviewConfidence ?? "";
+        EvidenceSource = decision?.EvidenceSource ?? "";
+    }
+
+    partial void OnSpeakerChanged(string value)
+    {
+        OnPropertyChanged(nameof(IsKnownSpeaker));
+    }
+
+    partial void OnStartChanged(double value)
+    {
+        OnPropertyChanged(nameof(PositionDisplay));
+        OnPropertyChanged(nameof(DurationDisplay));
+    }
+
+    partial void OnEndChanged(double value)
+    {
+        OnPropertyChanged(nameof(PositionDisplay));
+        OnPropertyChanged(nameof(DurationDisplay));
+    }
+
+    public void Normalize()
+    {
+        Start = Math.Max(0, Start);
+        End = Math.Max(Start + 0.01, End);
+    }
+
+    public SpeechReviewDecision ToDecision()
+    {
+        Normalize();
+
+        return new SpeechReviewDecision
+        {
+            Id = Id,
+            OriginalStart = OriginalStart,
+            OriginalEnd = OriginalEnd,
+            Start = Start,
+            End = End,
+            Quality = Quality,
+            Speaker = Speaker,
+            KnownSpeakerName = KnownSpeakerName,
+            SpeakerConfidence = SpeakerConfidence,
+            Notes = Notes,
+            FinalText = FinalText,
+            ReviewConfidence = ReviewConfidence,
+            EvidenceSource = EvidenceSource
+        };
+    }
+}
+
 public partial class SpeechReviewViewModel : ViewModelBase
 {
     private readonly IAudioPlayer audioPlayer = new AudioPlayer();
