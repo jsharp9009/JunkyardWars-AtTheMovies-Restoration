@@ -5,30 +5,27 @@
              x:DataType="vm:SpeechReviewViewModel"
              KeyDown="UserControl_KeyDown">
 
-    <Grid Margin="15" RowDefinitions="Auto,Auto,*" ColumnDefinitions="310,*">
-        <Grid Grid.Row="0" RowDefinitions="Auto,*" Grid.ColumnSpan="2" Margin="0,0,0,12" ColumnDefinitions="*">
-            <StackPanel Grid.Row="0" Grid.Column="0">
-                <Grid ColumnDefinitions="*,Auto">
-                       <TextBlock Grid.Column="0" Text="{Binding Status}" VerticalAlignment="Bottom"/> 
-                    <StackPanel Grid.Column="1">
-                <TextBlock HorizontalAlignment="Right" FontSize="18" FontWeight="Bold" Text="{Binding Project.CurrentPosition}" />
-                <ProgressBar Margin="0,6,0,4" Height="18" Minimum="0" Maximum="1" Value="{Binding Project.Progress}" />
-                <TextBlock HorizontalAlignment="Right" Text="{Binding Project.ProgressText}" />
-            </StackPanel>
-                   </Grid>
-            </StackPanel>
-           
-            <Border Classes="Card" Grid.ColumnSpan="2" Grid.Row="1" Grid.Column="0">
+    <Grid Margin="15" RowDefinitions="Auto,*" ColumnDefinitions="310,*">
+        <Grid Grid.Row="0" RowDefinitions="Auto,*" Grid.ColumnSpan="2" Margin="0,0,0,12">
+            <Grid Row="0" ColumnDefinitions="*,Auto">
+                <TextBlock Text="{Binding Status}" VerticalAlignment="Bottom"/>
+                <StackPanel Grid.Column="1">
+                    <TextBlock HorizontalAlignment="Right" FontSize="18" FontWeight="Bold" Text="{Binding Project.CurrentPosition}"/>
+                    <ProgressBar Margin="0,6,0,4" Height="18" Minimum="0" Maximum="1" Value="{Binding Project.Progress}"/>
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding Project.ProgressText}"/>
+                </StackPanel>
+            </Grid>
+            <Border Classes="Card" Grid.Row="1" Margin="0,10,0,0">
                 <StackPanel Spacing="6" Orientation="Horizontal">
                     <TextBlock Classes="Section" Text="Files"/>
-                    <TextBlock Text="Speech map:" VerticalAlignment="Center" Margin="10, 0, 5, 0" />
-                    <TextBox Text="{Binding MapPath}" VerticalAlignment="Center" MaxWidth="150"/>
-                    <TextBlock Text="Decisions:" VerticalAlignment="Center" Margin="10, 0, 5, 0" />
-                    <TextBox Text="{Binding DecisionsPath}" VerticalAlignment="Center" MaxWidth="150"/>
-                    <TextBlock Text="Audio:" VerticalAlignment="Center" Margin="10, 0, 5, 0" />
-                    <TextBox Text="{Binding AudioPath}" VerticalAlignment="Center" MaxWidth="150"/>
-                    <Button Classes="Action" HorizontalAlignment="Right" Content="Reload Map" Command="{Binding LoadCommand}"/>
-                     <Button Classes="Action" Content="Save All" Command="{Binding SaveCommand}" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Evidence map:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                    <TextBox Text="{Binding MapPath}" VerticalAlignment="Center" MaxWidth="180"/>
+                    <TextBlock Text="Decisions:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                    <TextBox Text="{Binding DecisionsPath}" VerticalAlignment="Center" MaxWidth="180"/>
+                    <TextBlock Text="Audio:" VerticalAlignment="Center" Margin="10,0,5,0"/>
+                    <TextBox Text="{Binding AudioPath}" VerticalAlignment="Center" MaxWidth="180"/>
+                    <Button Classes="Action" Content="Reload Evidence" Command="{Binding LoadCommand}"/>
+                    <Button Classes="Action" Content="Save All" Command="{Binding SaveCommand}"/>
                 </StackPanel>
             </Border>
         </Grid>
@@ -44,6 +41,7 @@
                     </Grid>
                 </StackPanel>
             </Border>
+
             <Border Classes="Card">
                 <StackPanel Spacing="6">
                     <TextBlock Classes="Section" Text="Navigation"/>
@@ -72,68 +70,110 @@
                     <TextBlock Text="Boundary changes are saved immediately." TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
+
+            <Border Classes="Card">
+                <StackPanel Spacing="6">
+                    <TextBlock Classes="Section" Text="Review Status"/>
+                    <TextBlock Text="{Binding Project.CurrentRegion.EvidenceFlagsDisplay}" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding Project.CurrentRegion.PositionDisplay}"/>
+                    <TextBlock Text="{Binding Project.CurrentRegion.BoundaryDisplay}" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
 
-        <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="10">
-            <Border Classes="Card">
-                <Grid ColumnDefinitions="80,*,120,220">
-                    <TextBlock FontWeight="Bold" Text="Region"/>
-                    <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding Project.CurrentRegion.PositionDisplay}"/>
-                    <TextBlock Grid.Column="2" Text="{Binding Project.CurrentRegion.DurationDisplay}"/>
-                    <TextBlock Grid.Column="3" Text="{Binding Project.CurrentRegion.BoundaryDisplay}" TextWrapping="Wrap"/>
-                </Grid>
-            </Border>
+        <ScrollViewer Grid.Row="1" Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+                <Border Classes="Card">
+                    <Grid ColumnDefinitions="80,*,120,220">
+                        <TextBlock FontWeight="Bold" Text="Region"/>
+                        <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding Project.CurrentRegion.PositionDisplay}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding Project.CurrentRegion.DurationDisplay}"/>
+                        <TextBlock Grid.Column="3" Text="{Binding Project.CurrentRegion.BoundaryDisplay}" TextWrapping="Wrap"/>
+                    </Grid>
+                </Border>
 
-            <Border Grid.Row="1" Classes="Card">
-                <Grid ColumnDefinitions="*" RowDefinitions="Auto,75,*">
-                    <TextBlock Grid.Column="0" Classes="Section" Text="Translated Dialogue"/>
-                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-                        <TextBlock FontSize="20" TextWrapping="Wrap" Text="{Binding Project.CurrentRegion.Text}"/>
-                    </ScrollViewer>
-                    <StackPanel Orientation="Horizontal" Spacing="6" Grid.Row="2">
-                        <TextBlock Text="Subtitle IDs:"/>
-                        <TextBlock Text="{Binding Project.CurrentRegion.SubtitleIdsDisplay}" TextWrapping="Wrap" />
+                <Border Classes="Card">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="Section" Text="Russian Source Evidence"/>
+                        <TextBlock FontSize="20" TextWrapping="Wrap" Text="{Binding Project.CurrentRegion.RussianText}"/>
                     </StackPanel>
-                </Grid>
-            </Border>
+                </Border>
 
-            <Border Grid.Row="2" Classes="Card">
-                <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="6">
-                    <TextBlock VerticalAlignment="Center" Text="Start:"/>
-                    <TextBox Grid.Column="1" Text="{Binding Project.CurrentRegion.Start}" Margin="6,0,15,0"/>
-                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="End:"/>
-                    <TextBox Grid.Column="3" Text="{Binding Project.CurrentRegion.End}" Margin="6,0,0,0"/>
-                    <TextBlock Grid.Row="1" Grid.ColumnSpan="4" Margin="0,8,0,0" Text="{Binding Project.CurrentRegion.BoundaryDisplay}"/>
-                </Grid>
-            </Border>
-
-
-            <Border Grid.Row="3" Classes="Card">
-                <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" ColumnDefinitions="auto,auto,*" RowSpacing="8">
-                    <TextBlock Classes="Section" Grid.ColumnSpan="2" Text="Review"/>
-
-                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="10,0" MinWidth="100">
-                        <TextBlock   Text="English quality" Margin="0, 5"/>
-                        <ComboBox  ItemsSource="{Binding QualityOptions}" SelectedItem="{Binding Project.CurrentRegion.Quality}"/>
+                <Border Classes="Card">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="Section" Text="Translation Candidates"/>
+                        <TextBlock TextWrapping="Wrap" FontFamily="Consolas" Text="{Binding Project.CurrentRegion.TranslationCandidatesDisplay}"/>
                     </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0" MinWidth="100">
-                        <TextBlock  Text="Speaker" Margin="0, 5"/>
-                        <ComboBox ItemsSource="{Binding SpeakerOptions}" SelectedItem="{Binding Project.CurrentRegion.Speaker}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="1" Grid.Column="2" Margin="10,0" MinWidth="100">
-                        <TextBlock  Text="Speaker confidence" Margin="0, 5"/>
-                        <ComboBox ItemsSource="{Binding SpeakerConfidenceOptions}" SelectedItem="{Binding Project.CurrentRegion.SpeakerConfidence}"/>
-                    </StackPanel>
+                </Border>
 
-                    <Grid Grid.Row="2" Grid.ColumnSpan="3" RowDefinitions="Auto,*" RowSpacing="8">
+                <Border Classes="Card">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="Section" Text="Recovered English Audio ASR"/>
+                        <TextBlock FontSize="20" TextWrapping="Wrap" Text="{Binding Project.CurrentRegion.RecoveredEnglishText}"/>
+                        <TextBlock Text="{Binding Project.CurrentRegion.TranslatedRegionText}" TextWrapping="Wrap" Opacity="0.65"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="Card">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="Section" Text="Final Wording"/>
+                        <TextBox AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 MinHeight="90"
+                                 Text="{Binding Project.CurrentRegion.FinalText, UpdateSourceTrigger=PropertyChanged}"
+                                 Watermark="Enter the wording supported by the evidence"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <StackPanel>
+                                <TextBlock Text="Confidence"/>
+                                <ComboBox ItemsSource="{Binding ReviewConfidenceOptions}"
+                                          SelectedItem="{Binding Project.CurrentRegion.ReviewConfidence}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Evidence source"/>
+                                <ComboBox ItemsSource="{Binding EvidenceSourceOptions}"
+                                          SelectedItem="{Binding Project.CurrentRegion.EvidenceSource}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="Card">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="Section" Text="Speaker / Audio Review"/>
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                            <StackPanel>
+                                <TextBlock Text="English quality"/>
+                                <ComboBox ItemsSource="{Binding QualityOptions}" SelectedItem="{Binding Project.CurrentRegion.Quality}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Speaker"/>
+                                <ComboBox ItemsSource="{Binding SpeakerOptions}" SelectedItem="{Binding Project.CurrentRegion.Speaker}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Speaker confidence"/>
+                                <ComboBox ItemsSource="{Binding SpeakerConfidenceOptions}" SelectedItem="{Binding Project.CurrentRegion.SpeakerConfidence}"/>
+                            </StackPanel>
+                        </Grid>
                         <Grid IsVisible="{Binding Project.CurrentRegion.IsKnownSpeaker}" ColumnDefinitions="140,*">
-                            <TextBlock  Text="Speaker name:" VerticalAlignment="Center"/>
+                            <TextBlock Text="Speaker name:" VerticalAlignment="Center"/>
                             <TextBox Grid.Column="1" Text="{Binding Project.CurrentRegion.KnownSpeakerName}" Watermark="Enter speaker name"/>
                         </Grid>
-                        <TextBox Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" VerticalAlignment="Stretch" MaxHeight="80" ScrollViewer.VerticalScrollBarVisibility="Auto" Watermark="Notes" Text="{Binding Project.CurrentRegion.Notes}"/>
-                    </Grid>
-                </Grid>
-            </Border>
-        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="Card">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="Section" Text="Notes"/>
+                        <TextBox AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 MinHeight="80"
+                                 MaxHeight="140"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding Project.CurrentRegion.Notes, UpdateSourceTrigger=PropertyChanged}"
+                                 Watermark="What did you hear, what conflicts, and what should be checked?"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>
